@@ -9,6 +9,16 @@ class Graph(object):
 
     def draw(self, imdir):
         self.draw_temporal(imdir)
+        self.draw_box(imdir)
+
+    def draw_box(self, imdir):
+        box = pygal.Box(style=pygal.style.LightGreenStyle)
+        box.title = '{}'.format(self.req.cfg.request)
+
+        for host in self.req.cfg.hosts:
+            box.add(host.legend, self.req.durations[host.legend])
+
+        box.render_to_png( os.path.join(imdir, '{}_box.png'.format(self.req.cfg.chart)) )
 
     def draw_temporal(self, imdir):
         line = pygal.Line(x_title='Iterations', y_title='Response time', style=pygal.style.LightGreenStyle)
