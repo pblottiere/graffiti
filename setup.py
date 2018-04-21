@@ -35,7 +35,7 @@ setup(
     scripts=[],
 
     provides=[],
-    install_requires=['pygal',],
+    install_requires=['pygal', 'pyaml', 'requests', 'cairosvg'],
 
     namespace_packages=[],
     packages=find_packages(),
