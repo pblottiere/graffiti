@@ -21,7 +21,7 @@ class Report(object):
                 tag_date = '{{GRAFFITI_DATE}}'
 
                 if tag_date in line:
-                    date =  str(datetime.datetime.now())
+                    date = str(datetime.datetime.now())
                     print(line.replace(tag_date, date), end='')
                     continue
 
@@ -39,10 +39,10 @@ class Report(object):
             self.add_png(graph)
 
     def add_png(self, graph):
-        chart =  ('<hr>\n'
-                  '<h2><a>{}</a></h2>\n'
-                  '{}\n'
-                  '<br/><br/>\n').format(graph.req.cfg.request, graph.req.cfg.description)
+        chart = ('<hr>\n'
+                 '<h2><a>{}</a></h2>\n'
+                 '{}\n'
+                 '<br/><br/>\n').format(graph.req.cfg.request, graph.req.cfg.description)
 
         for img in graph.imgs:
             i = base64.b64encode(open(img,'rb').read()).decode('utf-8')
@@ -53,21 +53,17 @@ class Report(object):
         self.charts += chart
 
     def add_svg(self, graph):
-        chart =  ('<hr>\n'
-                  '<h2><a>{}</a></h2>\n'
-                  '{}\n'
-                  '<br/><br/>\n').format(graph.req.cfg.request, graph.req.cfg.description)
+        chart = ('<hr>\n'
+                 '<h2><a>{}</a></h2>\n'
+                 '{}\n'
+                 '<br/><br/>\n').format(graph.req.cfg.request, graph.req.cfg.description)
 
         chart += '<figure\n>'
         tag = ''
         for img in graph.imgs:
-            # i = base64.b64encode(open(img,'rb').read()).decode('utf-8')
-            # tag = ('<img src="data:image/png;base64,{}" align="center"/>\n'
-            #        .format(i))
-
             tag += ('&emsp;&emsp;&emsp;'
-                    '<embed type="image/svg+xml" width=700px src="{}" align="center"/>'
-                   .format(img, img))
+                    '<embed type="image/svg+xml" width=800px src="{}" align="center"/>'
+                    .format(img, img))
 
         chart += tag
         chart += '</figure>\n'

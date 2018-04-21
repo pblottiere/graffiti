@@ -24,10 +24,10 @@ class Graph(object):
 
         if self.svg:
             img = '{}.{}'.format(img, 'svg')
-            box.render_to_file( img )
+            box.render_to_file(img)
         else:
             img = '{}.{}'.format(img, 'png')
-            box.render_to_png( img )
+            box.render_to_png(img)
 
         self.imgs.append(img)
 
@@ -44,7 +44,7 @@ class Graph(object):
             img = '{}.{}'.format(img, 'svg')
             line.render_to_file(img)
         else:
-            img = '{}.{}'.format(img, 'svg')
-            line.render_to_png( img )
+            img = '{}.{}'.format(img, 'png')
+            line.render_to_png(img)
 
         self.imgs.append(img)
