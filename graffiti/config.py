@@ -32,12 +32,15 @@ class Config(object):
 
     def __init__(self, yml):
         self.imdir = None
-        self.reportdir = None
+        self.html = None
         self.requests = []
         self.read(yml)
 
         shutil.rmtree(self.imdir, ignore_errors=True)
         os.makedirs(self.imdir)
+
+        if os.path.isfile(self.html):
+            os.remove(self.html)
 
     def read(self, yml):
         self.requests = []
@@ -46,7 +49,7 @@ class Config(object):
             cfg = yaml.load(stream)
 
             self.imdir = cfg['IMDIR']
-            self.reportdir = cfg['REPORTDIR']
+            self.html = cfg['HTML']
 
             for request in cfg['REQUESTS']:
                 self.requests.append( ConfigRequest(request) )

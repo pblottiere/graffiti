@@ -6,6 +6,7 @@ class Graph(object):
 
     def __init__(self, req):
         self.req = req
+        self.imgs = []
 
     def draw(self, imdir):
         self.draw_temporal(imdir)
@@ -18,7 +19,9 @@ class Graph(object):
         for host in self.req.cfg.hosts:
             box.add(host.legend, self.req.durations[host.legend])
 
-        box.render_to_png( os.path.join(imdir, '{}_box.png'.format(self.req.cfg.chart)) )
+        img = os.path.join(imdir, '{}_box.png'.format(self.req.cfg.chart))
+        box.render_to_png( img )
+        self.imgs.append(img)
 
     def draw_temporal(self, imdir):
         line = pygal.Line(x_title='Iterations', y_title='Response time', style=pygal.style.LightGreenStyle)
@@ -27,4 +30,6 @@ class Graph(object):
         for host in self.req.cfg.hosts:
             line.add(host.legend, self.req.durations[host.legend])
 
-        line.render_to_png( os.path.join(imdir, '{}_temporal.png'.format(self.req.cfg.chart)) )
+        img = os.path.join(imdir, '{}_temporal.png'.format(self.req.cfg.chart))
+        line.render_to_png( img )
+        self.imgs.append(img)

@@ -9,7 +9,7 @@ from graffiti import (Config,
 if __name__ == "__main__":
 
     cfg = Config('graffiti.yml')
-    # report = Report('report.html')
+    report = Report()
 
     for req_cfg in cfg.requests:
         req = Request(req_cfg)
@@ -18,4 +18,6 @@ if __name__ == "__main__":
         graph = Graph(req)
         graph.draw( cfg.imdir )
 
-        # report.add(graph)
+        report.add(graph)
+
+    report.write(cfg.html)
