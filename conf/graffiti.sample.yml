@@ -1,0 +1,5 @@
+HOST:           http://myserver/qgisserver
+ITERATIONS:     50
+REQUEST:        GetCapabilities
+PROJECT:        /home/user/project.qgs
+VERSION:        1.3.0
