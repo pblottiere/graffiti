@@ -9,13 +9,13 @@ from graffiti import (Config,
 if __name__ == "__main__":
 
     cfg = Config('graffiti.yml')
-    report = Report()
+    report = Report(svg=cfg.svg)
 
     for req_cfg in cfg.requests:
         req = Request(req_cfg)
         req.run()
 
-        graph = Graph(req)
+        graph = Graph(req, svg=cfg.svg)
         graph.draw( cfg.imdir )
 
         report.add(graph)

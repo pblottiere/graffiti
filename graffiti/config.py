@@ -33,6 +33,7 @@ class Config(object):
     def __init__(self, yml):
         self.imdir = None
         self.html = None
+        self.svg = True
         self.requests = []
         self.read(yml)
 
@@ -50,6 +51,7 @@ class Config(object):
 
             self.imdir = cfg['IMDIR']
             self.html = cfg['HTML']
+            self.svg = cfg['SVG']
 
             for request in cfg['REQUESTS']:
                 self.requests.append( ConfigRequest(request) )

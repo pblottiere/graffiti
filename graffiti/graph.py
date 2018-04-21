@@ -4,9 +4,10 @@ import os
 
 class Graph(object):
 
-    def __init__(self, req):
+    def __init__(self, req, svg=True):
         self.req = req
         self.imgs = []
+        self.svg = svg
 
     def draw(self, imdir):
         self.draw_temporal(imdir)
@@ -19,8 +20,15 @@ class Graph(object):
         for host in self.req.cfg.hosts:
             box.add(host.legend, self.req.durations[host.legend])
 
-        img = os.path.join(imdir, '{}_box.png'.format(self.req.cfg.chart))
-        box.render_to_png( img )
+        img = os.path.join(imdir, '{}_box'.format(self.req.cfg.chart))
+
+        if self.svg:
+            img = '{}.{}'.format(img, 'svg')
+            box.render_to_file( img )
+        else:
+            img = '{}.{}'.format(img, 'png')
+            box.render_to_png( img )
+
         self.imgs.append(img)
 
     def draw_temporal(self, imdir):
@@ -30,6 +38,13 @@ class Graph(object):
         for host in self.req.cfg.hosts:
             line.add(host.legend, self.req.durations[host.legend])
 
-        img = os.path.join(imdir, '{}_temporal.png'.format(self.req.cfg.chart))
-        line.render_to_png( img )
+        img = os.path.join(imdir, '{}_temporal'.format(self.req.cfg.chart))
+
+        if self.svg:
+            img = '{}.{}'.format(img, 'svg')
+            line.render_to_file(img)
+        else:
+            img = '{}.{}'.format(img, 'svg')
+            line.render_to_png( img )
+
         self.imgs.append(img)

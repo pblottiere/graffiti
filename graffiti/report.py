@@ -7,8 +7,9 @@ import datetime
 
 class Report(object):
 
-    def __init__(self):
+    def __init__(self, svg=True):
         self.charts = ''
+        self.svg = svg
 
     def write(self, html):
         dirname = os.path.dirname(os.path.abspath(__file__))
@@ -32,6 +33,12 @@ class Report(object):
                 print(line)
 
     def add(self, graph):
+        if self.svg:
+            self.add_svg(graph)
+        else:
+            self.add_png(graph)
+
+    def add_png(self, graph):
         chart =  ('<hr>\n'
                   '<h2><a>{}</a></h2>\n'
                   '{}\n'
@@ -40,7 +47,29 @@ class Report(object):
         for img in graph.imgs:
             i = base64.b64encode(open(img,'rb').read()).decode('utf-8')
             tag = ('<img src="data:image/png;base64,{}" align="center"/>\n'
-                    .format(i))
+                   .format(i))
             chart += tag
+
+        self.charts += chart
+
+    def add_svg(self, graph):
+        chart =  ('<hr>\n'
+                  '<h2><a>{}</a></h2>\n'
+                  '{}\n'
+                  '<br/><br/>\n').format(graph.req.cfg.request, graph.req.cfg.description)
+
+        chart += '<figure\n>'
+        tag = ''
+        for img in graph.imgs:
+            # i = base64.b64encode(open(img,'rb').read()).decode('utf-8')
+            # tag = ('<img src="data:image/png;base64,{}" align="center"/>\n'
+            #        .format(i))
+
+            tag += ('&emsp;&emsp;&emsp;'
+                    '<embed type="image/svg+xml" width=700px src="{}" align="center"/>'
+                   .format(img, img))
+
+        chart += tag
+        chart += '</figure>\n'
 
         self.charts += chart
