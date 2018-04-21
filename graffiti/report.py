@@ -40,7 +40,6 @@ class Report(object):
         for img in graph.imgs:
             i = base64.b64encode(open(img,'rb').read()).decode('utf-8')
             tag = ('<img src="data:image/png;base64,{}" align="center"/>\n'
-                   '<br/><br/>\n'
                     .format(i))
             chart += tag
 
