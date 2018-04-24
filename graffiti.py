@@ -2,7 +2,7 @@
 
 import argparse
 import os
-from tqdm import trange, tqdm
+from tqdm import trange
 from graffiti import (Config,
                       Request,
                       Graph,
@@ -20,10 +20,10 @@ if __name__ == "__main__":
     elif (os.path.isfile(args.cfg)):
         cfg = Config(args.cfg)
 
-        report = Report(svg=cfg.svg)
+        report = Report()
 
         for i in trange(len(cfg.requests), desc='Requests'):
-            req = Request(cfg.requests[i])
+            req = Request.build(cfg.requests[i])
             req.run()
 
             graph = Graph(req, svg=cfg.svg)
@@ -33,4 +33,5 @@ if __name__ == "__main__":
 
         report.write(cfg.html)
     else:
-        print("Error: '{}' is not a valid configuration file.".format(args.cfg))
+        print("Error: '{}' is not a valid configuration file."
+              .format(args.cfg))

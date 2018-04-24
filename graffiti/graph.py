@@ -1,7 +1,7 @@
 import pygal
 import os
 
-STYLE=pygal.style.DefaultStyle
+STYLE = pygal.style.DefaultStyle
 
 
 class Graph(object):
@@ -17,12 +17,12 @@ class Graph(object):
 
     def draw_box(self, imdir):
         box = pygal.Box(style=STYLE)
-        box.title = '{}'.format(self.req.cfg.request)
+        box.title = '{}'.format(self.req.type.name)
 
-        for host in self.req.cfg.hosts:
-            box.add(host.legend, self.req.durations[host.legend])
+        for name in self.req.durations.keys():
+            box.add(name, self.req.durations[name])
 
-        img = os.path.join(imdir, '{}_box'.format(self.req.cfg.chart))
+        img = os.path.join(imdir, '{}_box'.format(self.req.name))
 
         if self.svg:
             img = '{}.{}'.format(img, 'svg')
@@ -34,13 +34,18 @@ class Graph(object):
         self.imgs.append(img)
 
     def draw_temporal(self, imdir):
-        line = pygal.Line(x_title='Iterations', y_title='Response time', style=STYLE)
-        line.title = '{}'.format(self.req.cfg.request)
+        ds = self.req.durations
+        if len(ds) <= 0:
+            return
 
-        for host in self.req.cfg.hosts:
-            line.add(host.legend, self.req.durations[host.legend])
+        title = '{} iterations'.format(len(list(ds.values())[0]))
+        line = pygal.Line(x_title=title, y_title='Response time', style=STYLE)
+        line.title = '{}'.format(self.req.type.name)
 
-        img = os.path.join(imdir, '{}_temporal'.format(self.req.cfg.chart))
+        for name in ds.keys():
+            line.add(name, ds[name])
+
+        img = os.path.join(imdir, '{}_temporal'.format(self.req.name))
 
         if self.svg:
             img = '{}.{}'.format(img, 'svg')

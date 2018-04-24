@@ -7,11 +7,13 @@ import datetime
 
 class Report(object):
 
-    def __init__(self, svg=True):
+    def __init__(self):
         self.charts = ''
-        self.svg = svg
 
     def write(self, html):
+        if os.path.isfile(html):
+            os.remove(html)
+
         dirname = os.path.dirname(os.path.abspath(__file__))
         src = os.path.join(dirname, 'template.html')
         shutil.copyfile(src, html)
@@ -33,7 +35,7 @@ class Report(object):
                 print(line)
 
     def add(self, graph):
-        if self.svg:
+        if graph.svg:
             self.add_svg(graph)
         else:
             self.add_png(graph)
@@ -42,7 +44,7 @@ class Report(object):
         chart = ('<hr>\n'
                  '<h2><a>{}</a></h2>\n'
                  '{}\n'
-                 '<br/><br/>\n').format(graph.req.cfg.request, graph.req.cfg.description)
+                 '<br/><br/>\n').format(graph.req.type.name, graph.req.short_desc)
 
         for img in graph.imgs:
             i = base64.b64encode(open(img,'rb').read()).decode('utf-8')
@@ -56,7 +58,7 @@ class Report(object):
         chart = ('<hr>\n'
                  '<h2><a>{}</a></h2>\n'
                  '{}\n'
-                 '<br/><br/>\n').format(graph.req.cfg.request, graph.req.cfg.description)
+                 '<br/><br/>\n').format(graph.req.type.name, graph.req.short_desc)
 
         chart += '<figure\n>'
         tag = ''

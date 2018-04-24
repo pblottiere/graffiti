@@ -2,45 +2,39 @@ import yaml
 import shutil
 import os
 
+from.request import Type
+
 
 class ConfigHost(object):
 
     def __init__(self, cfg):
-        self.legend = cfg['LEGEND']
+        self.name = cfg['NAME']
         self.host = cfg['HOST']
-        self.project = cfg['PROJECT']
-        self.version = cfg['VERSION']
+        self.payload = {}
 
+        for key in cfg.keys():
+            if 'PAYLOAD_' in key:
+                newkey = key.replace('PAYLOAD_', '')
+                self.payload[newkey] = cfg[key]
 
-class ConfigHostGetMap(ConfigHost):
-
-    def __init__(self, cfg):
-        ConfigHost.__init__(self, cfg)
-
-        self.width = cfg['WIDTH']
-        self.height = cfg['HEIGHT']
-        self.crs = cfg['CRS']
-        self.format = cfg['FORMAT']
-        self.layers = ('{},'.format(cfg['LAYERS']))*cfg['DUPLICATE']
 
 class ConfigRequest(object):
 
     def __init__(self, cfg):
-        self.request = cfg['REQUEST']
-        self.description = cfg['DESCRIPTION']
+        self.type = None
+        if cfg['TYPE'] == Type.GetCapabilities.name:
+            self.type = Type.GetCapabilities
+        elif cfg['TYPE'] == Type.GetMap.name:
+            self.type = Type.GetMap
+
+        self.short_description = cfg['SHORT_DESCRIPTION']
+        self.long_description = cfg['LONG_DESCRIPTION']
         self.iterations = cfg['ITERATIONS']
-        self.chart = cfg['CHART']
+        self.name = cfg['NAME']
 
         self.hosts = []
         for host in cfg['HOSTS']:
-            if self.request == 'GetMap':
-                self.hosts.append(ConfigHostGetMap(host))
-            elif self.request == 'GetCapabilities':
-                self.hosts.append(ConfigHost(host))
-
-        if self.request == 'GetCapabilities' \
-                or self.request == 'GetMap':
-            self.service = 'WMS'
+            self.hosts.append(ConfigHost(host))
 
 
 class Config(object):
@@ -55,9 +49,6 @@ class Config(object):
         shutil.rmtree(self.imdir, ignore_errors=True)
         os.makedirs(self.imdir)
 
-        if os.path.isfile(self.html):
-            os.remove(self.html)
-
     def read(self, yml):
         self.requests = []
 
@@ -69,4 +60,4 @@ class Config(object):
             self.svg = cfg['SVG']
 
             for request in cfg['REQUESTS']:
-                self.requests.append( ConfigRequest(request) )
+                self.requests.append(ConfigRequest(request))
