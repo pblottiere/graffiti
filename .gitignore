@@ -1,3 +1,4 @@
 venv
 *.yml
 *.pyc
+graffiti.egg-info/
