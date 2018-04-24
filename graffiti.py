@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import argparse
+import os
 from graffiti import (Config,
                       Request,
                       Graph,
@@ -8,16 +10,26 @@ from graffiti import (Config,
 
 if __name__ == "__main__":
 
-    cfg = Config('graffiti.yml')
-    report = Report(svg=cfg.svg)
+    parser = argparse.ArgumentParser(description='Graffiti')
+    parser.add_argument('--cfg', type=str, help='YAML configuration file')
+    args = parser.parse_args()
 
-    for req_cfg in cfg.requests:
-        req = Request(req_cfg)
-        req.run()
+    if not args.cfg:
+        parser.print_help()
+    elif (os.path.isfile(args.cfg)):
+        cfg = Config(args.cfg)
 
-        graph = Graph(req, svg=cfg.svg)
-        graph.draw(cfg.imdir)
+        report = Report(svg=cfg.svg)
 
-        report.add(graph)
+        for req_cfg in cfg.requests:
+            req = Request(req_cfg)
+            req.run()
 
-    report.write(cfg.html)
+            graph = Graph(req, svg=cfg.svg)
+            graph.draw(cfg.imdir)
+
+            report.add(graph)
+
+        report.write(cfg.html)
+    else:
+        print("Error: '{}' is not a valid configuration file.".format(args.cfg))
