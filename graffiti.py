@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from tqdm import trange, tqdm
 from graffiti import (Config,
                       Request,
                       Graph,
@@ -21,8 +22,8 @@ if __name__ == "__main__":
 
         report = Report(svg=cfg.svg)
 
-        for req_cfg in cfg.requests:
-            req = Request(req_cfg)
+        for i in trange(len(cfg.requests), desc='Requests'):
+            req = Request(cfg.requests[i])
             req.run()
 
             graph = Graph(req, svg=cfg.svg)

@@ -1,4 +1,5 @@
 import time
+from tqdm import trange
 import requests
 
 
@@ -27,11 +28,12 @@ class Request(object):
         self.durations = {}
 
     def run(self):
-        for host in self.cfg.hosts:
+        for i in trange(len(self.cfg.hosts), leave=False, desc='Hosts'):
+            host = self.cfg.hosts[i]
             payload = Payload(self.cfg, host)
             dur = []
 
-            for i in range(0, self.cfg.iterations):
+            for j in trange(self.cfg.iterations, leave=False, desc='Iterations'):
                 start = time.time()
                 r = requests.get(host.host, params=payload.payload)
 
