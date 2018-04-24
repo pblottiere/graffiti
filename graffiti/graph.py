@@ -1,6 +1,8 @@
 import pygal
 import os
 
+STYLE=pygal.style.DefaultStyle
+
 
 class Graph(object):
 
@@ -14,7 +16,7 @@ class Graph(object):
         self.draw_box(imdir)
 
     def draw_box(self, imdir):
-        box = pygal.Box(style=pygal.style.LightGreenStyle)
+        box = pygal.Box(style=STYLE)
         box.title = '{}'.format(self.req.cfg.request)
 
         for host in self.req.cfg.hosts:
@@ -32,7 +34,7 @@ class Graph(object):
         self.imgs.append(img)
 
     def draw_temporal(self, imdir):
-        line = pygal.Line(x_title='Iterations', y_title='Response time', style=pygal.style.LightGreenStyle)
+        line = pygal.Line(x_title='Iterations', y_title='Response time', style=STYLE)
         line.title = '{}'.format(self.req.cfg.request)
 
         for host in self.req.cfg.hosts:

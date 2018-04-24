@@ -16,7 +16,7 @@ if __name__ == "__main__":
         req.run()
 
         graph = Graph(req, svg=cfg.svg)
-        graph.draw( cfg.imdir )
+        graph.draw(cfg.imdir)
 
         report.add(graph)
 

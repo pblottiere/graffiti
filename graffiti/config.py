@@ -12,6 +12,17 @@ class ConfigHost(object):
         self.version = cfg['VERSION']
 
 
+class ConfigHostGetMap(ConfigHost):
+
+    def __init__(self, cfg):
+        ConfigHost.__init__(self, cfg)
+
+        self.width = cfg['WIDTH']
+        self.height = cfg['HEIGHT']
+        self.crs = cfg['CRS']
+        self.format = cfg['FORMAT']
+        self.layers = ('{},'.format(cfg['LAYERS']))*cfg['DUPLICATE']
+
 class ConfigRequest(object):
 
     def __init__(self, cfg):
@@ -22,9 +33,13 @@ class ConfigRequest(object):
 
         self.hosts = []
         for host in cfg['HOSTS']:
-            self.hosts.append(ConfigHost(host))
+            if self.request == 'GetMap':
+                self.hosts.append(ConfigHostGetMap(host))
+            elif self.request == 'GetCapabilities':
+                self.hosts.append(ConfigHost(host))
 
-        if self.request == 'GetCapabilities':
+        if self.request == 'GetCapabilities' \
+                or self.request == 'GetMap':
             self.service = 'WMS'
 
 
