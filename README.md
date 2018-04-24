@@ -1,6 +1,5 @@
 # Graffiti
 
-
 ## Install
 
 ````
