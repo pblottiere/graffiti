@@ -19,7 +19,8 @@ class Host(object):
 
 class Request(object):
 
-    def __init__(self, name, type, hosts, iterations=50, short_desc='', long_desc=''):
+    def __init__(self, name, type, hosts, iterations=50, short_desc='',
+                 long_desc='', logfile=''):
         self.durations = {}
         self.type = type
         self.hosts = hosts
@@ -27,6 +28,7 @@ class Request(object):
         self.name = name
         self.short_desc = short_desc
         self.long_desc = long_desc
+        self.logfile = logfile
 
     @property
     def hosts(self):
@@ -51,12 +53,25 @@ class Request(object):
         short_desc = cfg.short_description
         long_desc = cfg.long_description
         type = cfg.type
-        return Request(name, type, hosts, iterations, short_desc, long_desc)
+        logfile = cfg.logfile
+        return Request(name, type, hosts, iterations, short_desc, long_desc,
+                       logfile)
 
     def run(self):
+        log = None
+        if self.logfile:
+            log = open(self.logfile, 'w')
+
         for i in trange(len(self.hosts), leave=False, desc='Hosts'):
             host = self.hosts[i]
             dur = []
+
+            if log:
+                log.write(host.name)
+                log.write('\n')
+                log.write('    - HOST: \n'.format(host))
+                for key in host.payload.keys():
+                    log.write('    - {}: {}\n'.format(key, host.payload[key]))
 
             for j in trange(self.iterations, leave=False, desc='Iterations'):
                 start = time.time()

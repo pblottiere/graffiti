@@ -31,6 +31,7 @@ class ConfigRequest(object):
         self.long_description = cfg['LONG_DESCRIPTION']
         self.iterations = cfg['ITERATIONS']
         self.name = cfg['NAME']
+        self.logfile = cfg['LOGFILE']
 
         self.hosts = []
         for host in cfg['HOSTS']:
