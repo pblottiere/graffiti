@@ -23,7 +23,7 @@ class Report(object):
                 tag_date = '{{GRAFFITI_DATE}}'
 
                 if tag_date in line:
-                    date = str(datetime.datetime.now())
+                    date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     print(line.replace(tag_date, date), end='')
                     continue
 
@@ -44,10 +44,10 @@ class Report(object):
         chart = ('<hr>\n'
                  '<h2><a>{}</a></h2>\n'
                  '{}\n'
-                 '<br/><br/>\n').format(graph.req.type.name, graph.req.short_desc)
+                 '<br/><br/>\n').format(graph.req.title, graph.req.short_desc)
 
         for img in graph.imgs:
-            i = base64.b64encode(open(img,'rb').read()).decode('utf-8')
+            i = base64.b64encode(open(img, 'rb').read()).decode('utf-8')
             tag = ('<img src="data:image/png;base64,{}" align="center"/>\n'
                    .format(i))
             chart += tag
@@ -58,7 +58,7 @@ class Report(object):
         chart = ('<hr>\n'
                  '<h2><a>{}</a></h2>\n'
                  '{}\n'
-                 '<br/><br/>\n').format(graph.req.type.name, graph.req.short_desc)
+                 '<br/><br/>\n').format(graph.req.title, graph.req.short_desc)
 
         chart += '<figure\n>'
         tag = ''

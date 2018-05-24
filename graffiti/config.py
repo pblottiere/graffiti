@@ -27,6 +27,7 @@ class ConfigRequest(object):
         elif cfg['TYPE'] == Type.GetMap.name:
             self.type = Type.GetMap
 
+        self.title = cfg['TITLE']
         self.short_description = cfg['SHORT_DESCRIPTION']
         self.long_description = cfg['LONG_DESCRIPTION']
         self.iterations = cfg['ITERATIONS']

@@ -20,7 +20,7 @@ class Host(object):
 class Request(object):
 
     def __init__(self, name, type, hosts, iterations=50, short_desc='',
-                 long_desc='', logfile=''):
+                 long_desc='', logfile='', title=''):
         self.durations = {}
         self.type = type
         self.hosts = hosts
@@ -29,6 +29,7 @@ class Request(object):
         self.short_desc = short_desc
         self.long_desc = long_desc
         self.logfile = logfile
+        self.title = title
 
     @property
     def hosts(self):
@@ -50,12 +51,13 @@ class Request(object):
         hosts = cfg.hosts
         iterations = cfg.iterations
         name = cfg.name
+        title = cfg.title
         short_desc = cfg.short_description
         long_desc = cfg.long_description
         type = cfg.type
         logfile = cfg.logfile
         return Request(name, type, hosts, iterations, short_desc, long_desc,
-                       logfile)
+                       logfile, title)
 
     def run(self):
         log = None
