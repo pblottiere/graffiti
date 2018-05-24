@@ -55,10 +55,17 @@ class Report(object):
         self.charts += chart
 
     def add_svg(self, graph):
+        long_desc = ''
+        with open(graph.req.long_desc) as f:
+            long_desc = f.read()
+
         chart = ('<hr>\n'
                  '<h2><a>{}</a></h2>\n'
                  '{}\n'
-                 '<br/><br/>\n').format(graph.req.title, graph.req.short_desc)
+                 '<br/><br/>\n'
+                 '{}\n'
+                 '<br/><br/>\n').format(graph.req.title, graph.req.short_desc,
+                                        long_desc)
 
         chart += '<figure\n>'
         tag = ''

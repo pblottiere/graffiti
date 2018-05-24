@@ -1,47 +1,21 @@
 IMDIR: /tmp/graffiti/imgs/
 HTML: /tmp/graffiti/report.html
 SVG: True
-LOGFILE: /tmp/graffiti/log
 REQUESTS:
-    - NAME: getcapabilities
+    - NAME: my_name
       TYPE: GetCapabilities
-      SHORT_DESCRIPTION: "Comparison between 2.18 and Master for GetCapabilities requests"
-      LONG_DESCRIPTION: getcapabilities.txt
+      TITLE: Title
+      SHORT_DESCRIPTION: "Short Description"
+      LONG_DESCRIPTION: longdescription.txt
+      LOGFILE: /tmp/graffiti/myname.log
       ITERATIONS: 5
       HOSTS:
-        - NAME: "2.18"
-          HOST: http://37.187.164.233:8080/218_qgisserver
-          PAYLOAD_MAP: /home/storage/qgisserver/qgis-server-tutorial-data/world.qgs
-          PAYLOAD_VERSION: 1.3.0
-        - NAME: "Master"
-          HOST: http://37.187.164.233:8080/nightly_master_qgisserver
-          PAYLOAD_MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
-          PAYLOAD_VERSION: 1.3.0
-
-    - TYPE: GetMap
-      SHORT_DESCRIPTION: "Comparison between Master and 2.18 for GetMap requests"
-      LONG_DESCRIPTION: todo
-      ITERATIONS: 50
-      NAME: getmap
-      HOSTS:
-          - NAME: "Master 1 Layer"
-            HOST: http://37.187.164.233:8080/nightly_master_qgisserver
-            PAYLOAD_MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
-            PAYLOAD_VERSION: 1.3.0
-            PAYLOAD_LAYERS: countries
-            PAYLOAD_DUPLICATE: 1
-            PAYLOAD_WIDTH: 800
-            PAYLOAD_HEIGHT: 800
-            PAYLOAD_CRS: EPSG:4326
-            PAYLOAD_FORMAT: png
-
-          - NAME: "2.18 1 Layer"
+          - NAME: "2.18"
             HOST: http://37.187.164.233:8080/218_qgisserver
             PAYLOAD_MAP: /home/storage/qgisserver/qgis-server-tutorial-data/world.qgs
             PAYLOAD_VERSION: 1.3.0
-            PAYLOAD_LAYERS: countries
-            PAYLOAD_DUPLICATE: 1
-            PAYLOAD_WIDTH: 800
-            PAYLOAD_HEIGHT: 800
-            PAYLOAD_CRS: EPSG:4326
-            PAYLOAD_FORMAT: png
+
+          - NAME: "Master"
+            HOST: http://37.187.164.233:8080/nightly_master_qgisserver
+            PAYLOAD_MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
+            PAYLOAD_VERSION: 1.3.0

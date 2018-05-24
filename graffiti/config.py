@@ -20,7 +20,7 @@ class ConfigHost(object):
 
 class ConfigRequest(object):
 
-    def __init__(self, cfg):
+    def __init__(self, cfg, basedir):
         self.type = None
         if cfg['TYPE'] == Type.GetCapabilities.name:
             self.type = Type.GetCapabilities
@@ -29,7 +29,7 @@ class ConfigRequest(object):
 
         self.title = cfg['TITLE']
         self.short_description = cfg['SHORT_DESCRIPTION']
-        self.long_description = cfg['LONG_DESCRIPTION']
+        self.long_description = os.path.join(basedir, cfg['LONG_DESCRIPTION'])
         self.iterations = cfg['ITERATIONS']
         self.name = cfg['NAME']
         self.logfile = cfg['LOGFILE']
@@ -60,6 +60,7 @@ class Config(object):
             self.imdir = cfg['IMDIR']
             self.html = cfg['HTML']
             self.svg = cfg['SVG']
+            self.basedir = os.path.dirname(yml)
 
             for request in cfg['REQUESTS']:
-                self.requests.append(ConfigRequest(request))
+                self.requests.append(ConfigRequest(request, self.basedir))
