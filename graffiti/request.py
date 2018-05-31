@@ -83,7 +83,7 @@ class Request(object):
                     print("ERROR")
                     continue
 
-                dur.append(round(time.time() - start, 2))
+                dur.append(round(time.time() - start, 4))
 
             self.durations[host.name] = dur
 
