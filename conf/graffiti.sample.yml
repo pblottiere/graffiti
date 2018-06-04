@@ -7,7 +7,7 @@ REQUESTS:
       TITLE: "GetCapabiltiies Requests"
       SHORT_DESCRIPTION: "Test GetCapabilities requests on nightly master"
       LONG_DESCRIPTION: getcapabilities.txt
-      LOGFILE: getcapabilities.log
+      LOG: True
       ITERATIONS: 5
       HOSTS:
           - NAME: "Master"
@@ -19,7 +19,7 @@ REQUESTS:
       TITLE: "GetMap Requests"
       SHORT_DESCRIPTION: "Test GetMap requests on nightly master"
       LONG_DESCRIPTION: getmap.txt
-      LOGFILE: getmap.log
+      LOG: True
       ITERATIONS: 5
       HOSTS:
           - NAME: "Master"
@@ -30,4 +30,5 @@ REQUESTS:
             PAYLOAD_CRS: EPSG:4326
             PAYLOAD_LAYERS: countries
             PAYLOAD_VERSION: 1.1.0
+            PAYLOAD_FORMAT: png
             PAYLOAD_BBOX: -53.7815,-175.136,78.2467,179.195

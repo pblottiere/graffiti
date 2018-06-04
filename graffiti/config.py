@@ -20,7 +20,7 @@ class ConfigHost(object):
 
 class ConfigRequest(object):
 
-    def __init__(self, cfg, basedir):
+    def __init__(self, cfg, basedir, logdir):
         self.type = None
         if cfg['TYPE'] == Type.GetCapabilities.name:
             self.type = Type.GetCapabilities
@@ -32,7 +32,7 @@ class ConfigRequest(object):
         self.long_description = os.path.join(basedir, cfg['LONG_DESCRIPTION'])
         self.iterations = cfg['ITERATIONS']
         self.name = cfg['NAME']
-        self.logfile = cfg['LOGFILE']
+        self.logdir = logdir
 
         self.hosts = []
         for host in cfg['HOSTS']:
@@ -42,14 +42,16 @@ class ConfigRequest(object):
 class Config(object):
 
     def __init__(self, yml):
-        self.imdir = None
         self.html = None
         self.svg = True
         self.requests = []
         self.read(yml)
 
-        shutil.rmtree(self.imdir, ignore_errors=True)
+        shutil.rmtree(self.outdir, ignore_errors=True)
+        os.makedirs(self.outdir)
         os.makedirs(self.imdir)
+        os.makedirs(self.logdir)
+
 
     def read(self, yml):
         self.requests = []
@@ -57,10 +59,13 @@ class Config(object):
         with open(yml, 'r') as stream:
             cfg = yaml.load(stream)
 
-            self.imdir = cfg['IMDIR']
-            self.html = cfg['HTML']
             self.svg = cfg['SVG']
             self.basedir = os.path.dirname(os.path.abspath(yml))
 
+            self.outdir = cfg['OUTDIR']
+            self.imdir = os.path.join(self.outdir, 'graph')
+            self.logdir = os.path.join(self.outdir, 'log')
+            self.html = os.path.join(self.outdir, cfg['HTML'])
+
             for request in cfg['REQUESTS']:
-                self.requests.append(ConfigRequest(request, self.basedir))
+                self.requests.append(ConfigRequest(request, self.basedir, self.logdir))

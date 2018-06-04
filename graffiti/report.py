@@ -18,7 +18,7 @@ class Report(object):
         src = os.path.join(dirname, 'template.html')
         shutil.copyfile(src, html)
 
-        with fileinput.FileInput(html, inplace=True, backup='.bak') as file:
+        with fileinput.FileInput(html, inplace=True) as file:
             for line in file:
                 tag_date = '{{GRAFFITI_DATE}}'
 
@@ -71,8 +71,9 @@ class Report(object):
         tag = ''
         for img in graph.imgs:
             tag += ('&emsp;&emsp;&emsp;'
-                    '<embed type="image/svg+xml" width=800px src="{}" align="center"/>'
-                    .format(img, img))
+                    '<embed type="image/svg+xml" width=800px src="./{}" '
+                    'align="center"/>'
+                    .format(img))
 
         chart += tag
         chart += '</figure>\n'

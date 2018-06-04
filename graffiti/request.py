@@ -1,6 +1,8 @@
 import time
 from enum import Enum
 from tqdm import trange
+import shutil
+import os
 import requests
 
 
@@ -20,7 +22,7 @@ class Host(object):
 class Request(object):
 
     def __init__(self, name, type, hosts, iterations=50, short_desc='',
-                 long_desc='', logfile='', title=''):
+                 long_desc='', logdir=None, title=''):
         self.durations = {}
         self.type = type
         self.hosts = hosts
@@ -28,7 +30,7 @@ class Request(object):
         self.name = name
         self.short_desc = short_desc
         self.long_desc = long_desc
-        self.logfile = logfile
+        self.logdir = logdir
         self.title = title
 
     @property
@@ -55,14 +57,15 @@ class Request(object):
         short_desc = cfg.short_description
         long_desc = cfg.long_description
         type = cfg.type
-        logfile = cfg.logfile
+        logdir = cfg.logdir
         return Request(name, type, hosts, iterations, short_desc, long_desc,
-                       logfile, title)
+                       logdir, title)
 
     def run(self):
         log = None
-        if self.logfile:
-            log = open(self.logfile, 'w')
+        if self.logdir:
+            logfile = os.path.join(self.logdir, '{}.log'.format(self.name))
+            log = open(logfile, 'w')
 
         for i in trange(len(self.hosts), leave=False, desc='Hosts'):
             host = self.hosts[i]
@@ -77,11 +80,21 @@ class Request(object):
 
             for j in trange(self.iterations, leave=False, desc='Iterations'):
                 start = time.time()
-                r = requests.get(host.host, params=host.payload)
+                r = requests.get(host.host, params=host.payload, stream=True)
 
                 if r.status_code != 200:
                     print("ERROR")
                     continue
+
+                # log 1st iteration when it's an image (to be able to include
+                # the figure in the long description)
+                if self.logdir and j == 0 and 'FORMAT' in host.payload \
+                        and 'png' in host.payload['FORMAT']:
+                    imname = '{}.png'.format(self.name)
+                    logres = os.path.join(self.logdir, imname)
+                    with open(logres, 'wb') as f:
+                        r.raw.decode_content = True
+                        shutil.copyfileobj(r.raw, f)
 
                 dur.append(round(time.time() - start, 4))
 

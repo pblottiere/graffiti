@@ -31,7 +31,7 @@ class Graph(object):
             img = '{}.{}'.format(img, 'png')
             box.render_to_png(img)
 
-        self.imgs.append(img)
+        self.imgs.append(os.path.join('graph', os.path.basename(img)))
 
     def draw_temporal(self, imdir):
         ds = self.req.durations
@@ -54,4 +54,4 @@ class Graph(object):
             img = '{}.{}'.format(img, 'png')
             line.render_to_png(img)
 
-        self.imgs.append(img)
+        self.imgs.append(os.path.join('graph', os.path.basename(img)))
