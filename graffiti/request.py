@@ -1,6 +1,7 @@
 import time
 from enum import Enum
 from tqdm import trange
+import csv
 import shutil
 import os
 import requests
@@ -101,6 +102,21 @@ class Request(object):
                 dur.append(round(time.time() - start, 4))
 
             self.durations[host.name] = dur
+
+        if log:
+            log.close()
+
+        if self.logdir:
+            csvfile = os.path.join(self.logdir, '{}.csv'.format(self.name))
+            with open(csvfile, 'w') as f:
+                writer = csv.writer(f, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(self.durations.keys())
+
+                for i in range(0, self.iterations):
+                    row = []
+                    for key in self.durations.keys():
+                        row.append(self.durations[key][i])
+                    writer.writerow(row)
 
     def save(self, path):
         with open(path, 'w') as f:
