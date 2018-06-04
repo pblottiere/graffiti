@@ -60,7 +60,7 @@ class Config(object):
             self.imdir = cfg['IMDIR']
             self.html = cfg['HTML']
             self.svg = cfg['SVG']
-            self.basedir = os.path.dirname(yml)
+            self.basedir = os.path.dirname(os.path.abspath(yml))
 
             for request in cfg['REQUESTS']:
                 self.requests.append(ConfigRequest(request, self.basedir))
