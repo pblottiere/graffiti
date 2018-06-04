@@ -1,3 +1,3 @@
-<i>You may even include the resulting image from the 1st host (and 1st iteration) if the FORMAT is png: </i>
+You may even include the resulting image from the 1st host (and 1st iteration) if the FORMAT is png:
 
-<img width=200px src="./log/getmap_0.png" class="center"/>
+<center><img width=300px src="./log/getmap_0.png"/></center>

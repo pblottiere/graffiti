@@ -10,7 +10,7 @@ class Report(object):
     def __init__(self):
         self.charts = ''
 
-    def write(self, html):
+    def write(self, html, desc=''):
         if os.path.isfile(html):
             os.remove(html)
 
@@ -21,15 +21,20 @@ class Report(object):
         with fileinput.FileInput(html, inplace=True) as file:
             for line in file:
                 tag_date = '{{GRAFFITI_DATE}}'
-
                 if tag_date in line:
-                    date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    format = '%Y-%m-%d %H:%M:%S'
+                    date = datetime.datetime.now().strftime(format)
                     print(line.replace(tag_date, date), end='')
                     continue
 
                 tag_charts = '{{GRAFFITI_CHARTS}}'
                 if tag_charts in line:
                     print(line.replace(tag_charts, self.charts), end='')
+                    continue
+
+                tag_desc = '{{GRAFFITI_DESCRIPTION}}'
+                if tag_desc in line:
+                    print(line.replace(tag_desc, desc), end='')
                     continue
 
                 print(line)
@@ -55,17 +60,18 @@ class Report(object):
         self.charts += chart
 
     def add_svg(self, graph):
-        long_desc = ''
-        with open(graph.req.long_desc) as f:
-            long_desc = f.read()
+        desc = ''
+        with open(graph.req.desc) as f:
+            desc = f.read()
 
         chart = ('<hr>\n'
                  '<h2><a>{}</a></h2>\n'
-                 '{}\n'
+                 '<br/>\n'
+                 '<b>Description</b>\n'
                  '<br/><br/>\n'
                  '{}\n'
-                 '<br/><br/>\n').format(graph.req.title, graph.req.short_desc,
-                                        long_desc)
+                 '<br/><br/>\n'
+                 '<b>Graphics</b>').format(graph.req.title, desc)
 
         chart += '<figure\n>'
         tag = ''

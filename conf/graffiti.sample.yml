@@ -1,12 +1,12 @@
 OUTDIR: /tmp/graffiti/
 HTML: report.html
 SVG: True
+DESCRIPTION: description.txt
 REQUESTS:
     - NAME: getcapabilities_0
       TYPE: GetCapabilities
-      TITLE: "GetCapabiltiies Requests"
-      SHORT_DESCRIPTION: "Test GetCapabilities requests on nightly master"
-      LONG_DESCRIPTION: getcapabilities.txt
+      TITLE: "GetCapabilities Requests"
+      DESCRIPTION: getcapabilities.txt
       LOG: True
       ITERATIONS: 5
       HOSTS:
@@ -17,8 +17,7 @@ REQUESTS:
     - NAME: getmap_0
       TYPE: GetMap
       TITLE: "GetMap Requests"
-      SHORT_DESCRIPTION: "Test GetMap requests on nightly master"
-      LONG_DESCRIPTION: getmap.txt
+      DESCRIPTION: getmap.txt
       LOG: True
       ITERATIONS: 5
       HOSTS:

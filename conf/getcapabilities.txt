@@ -1,1 +1,1 @@
-<i> Long Description with HTML Formatting! </i>
+<i> Description with HTML Formatting! </i>

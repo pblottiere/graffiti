@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
             report.add(graph)
 
-        report.write(cfg.html)
+        report.write(cfg.html, cfg.desc)
     else:
         print("Error: '{}' is not a valid configuration file."
               .format(args.cfg))

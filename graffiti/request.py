@@ -21,15 +21,14 @@ class Host(object):
 
 class Request(object):
 
-    def __init__(self, name, type, hosts, iterations=50, short_desc='',
-                 long_desc='', logdir=None, title=''):
+    def __init__(self, name, type, hosts, iterations=50, desc='',
+                 logdir=None, title=''):
         self.durations = {}
         self.type = type
         self.hosts = hosts
         self.iterations = iterations
         self.name = name
-        self.short_desc = short_desc
-        self.long_desc = long_desc
+        self.desc = desc
         self.logdir = logdir
         self.title = title
 
@@ -44,22 +43,25 @@ class Request(object):
             hosts[i].payload['REQUEST'] = self.type.name
 
             service = ''
-            if self.type == Type.GetCapabilities:
+            if self.type == Type.GetCapabilities or self.type == Type.GetMap:
                 service = 'WMS'
             hosts[i].payload['SERVICE'] = service
 
     @staticmethod
     def build(cfg):
-        hosts = cfg.hosts
         iterations = cfg.iterations
         name = cfg.name
         title = cfg.title
-        short_desc = cfg.short_description
-        long_desc = cfg.long_description
+        desc = cfg.description
         type = cfg.type
         logdir = cfg.logdir
-        return Request(name, type, hosts, iterations, short_desc, long_desc,
-                       logdir, title)
+
+        hosts = []
+        for hostCfg in cfg.hosts:
+            host = Host(hostCfg.name, hostCfg.host, hostCfg.payload)
+            hosts.append(host)
+
+        return Request(name, type, hosts, iterations, desc, logdir, title)
 
     def run(self):
         log = None

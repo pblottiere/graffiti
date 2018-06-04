@@ -28,8 +28,7 @@ class ConfigRequest(object):
             self.type = Type.GetMap
 
         self.title = cfg['TITLE']
-        self.short_description = cfg['SHORT_DESCRIPTION']
-        self.long_description = os.path.join(basedir, cfg['LONG_DESCRIPTION'])
+        self.description = os.path.join(basedir, cfg['DESCRIPTION'])
         self.iterations = cfg['ITERATIONS']
         self.name = cfg['NAME']
         self.logdir = logdir
@@ -69,3 +68,9 @@ class Config(object):
 
             for request in cfg['REQUESTS']:
                 self.requests.append(ConfigRequest(request, self.basedir, self.logdir))
+
+            self.desc = ''
+            if cfg['DESCRIPTION']:
+                path = os.path.join(self.basedir, cfg['DESCRIPTION'])
+                with open(path) as f:
+                    self.desc = f.read()
