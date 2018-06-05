@@ -86,7 +86,7 @@ class Request(object):
                 r = requests.get(host.host, params=host.payload, stream=True)
 
                 if r.status_code != 200:
-                    print("ERROR")
+                    print("ERROR CODE: {}".format(r.status_code))
                     continue
 
                 # log 1st iteration when it's an image (to be able to include
