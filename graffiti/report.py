@@ -2,13 +2,62 @@ import fileinput
 import shutil
 import base64
 import os
+import uuid
 import datetime
+
+
+class ReportTOCLeaf(object):
+
+    def __init__(self, name):
+        self.name = name
+        self.id = uuid.uuid4().hex
+
+    def tostr(self):
+        return '<li><a href="#{}">{}</a>'.format(self.id, self.name)
+
+
+class ReportTOCNode(object):
+
+    def __init__(self, name):
+        self.me = ReportTOCLeaf(name)
+        self.leafs = []
+
+    def tostr(self):
+        leafs = ''
+        for leaf in self.leafs:
+            leafs += leaf.tostr()
+
+        s = ('{}'
+             '<ul>'
+             '{}'
+             '</ul>').format(self.me.tostr(), leafs)
+        return s
+
+
+class ReportTOC(object):
+
+    def __init__(self):
+        self.leafs = []
+
+    def tostr(self):
+        leaf = ''
+        for l in self.leafs:
+            leaf += l.tostr()
+
+        s = ('<div id="toc_container">'
+             '<ul class="toc_list">'
+             '{}'
+             '</ul>'
+             '</div>'.format(leaf))
+
+        return s
 
 
 class Report(object):
 
     def __init__(self):
         self.charts = ''
+        self.toc = ReportTOC()
 
     def write(self, html, desc=''):
         if os.path.isfile(html):
@@ -40,6 +89,11 @@ class Report(object):
                     print(line.replace(tag_desc, desc), end='')
                     continue
 
+                tag_toc = '{{GRAFFITI_TOC}}'
+                if tag_toc in line:
+                    print(line.replace(tag_toc, self.toc.tostr()), end='')
+                    continue
+
                 print(line)
 
     def add(self, graph):
@@ -66,21 +120,17 @@ class Report(object):
         with open(graph.req.desc) as f:
             desc = f.read()
 
-        chart = ('<h2><a>{}</a></h2>\n'
-                 '<br/>\n'
+        leaf = ReportTOCLeaf(graph.req.title)
+        self.toc.leafs.append(leaf)
+
+        chart = ('<h2 id="{}">{}</h2>\n'
                  '<h3>Description</h3>\n'
-                 '<br/>\n'
                  '{}\n'
-                 '<br/>\n'
-                 '<h3>Results</h3>').format(graph.req.title, desc)
+                 '<h3>Results</h3>').format(leaf.id, graph.req.title, desc)
 
         chart += '<div class="row" align="center">'
         tag = ''
         for img in graph.imgs:
-            # tag += ('&emsp;&emsp;&emsp;'
-            #         '<embed type="image/svg+xml" width=800px src="./{}" '
-            #         'align="center"/>'
-            #         .format(img))
             tag += ('<div class="column" style="width:49%">'
                     '<figure>'
                     '<embed type="image/svg+xml" width=100% src="./{}" align="center"/>'
