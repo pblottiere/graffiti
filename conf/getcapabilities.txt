@@ -1,1 +1,7 @@
-<i> Description with HTML Formatting! </i>
+<p><i> Description with HTML Formatting: </i></p>
+
+<ul>
+  <li>layer 1</li>
+  <li>layer 2</li>
+  <li>layer 3</li>
+</ul>

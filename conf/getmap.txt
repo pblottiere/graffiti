@@ -1,3 +1,16 @@
-You may even include the resulting image from the 1st host (and 1st iteration) if the FORMAT is png:
+<p>You may even include the resulting image from the 1st host (and 1st iteration) if the FORMAT is png:</p>
 
-<center><img width=300px src="./log/getmap_0.png"/></center>
+<div class="row" align="center">
+  <div class="column" style="width:49%">
+    <figure>
+      <img src="./log/getmap_0_master_0.png" alt="" style="width:50%">
+      <figcaption>QGIS Server Master 0</figcaption>
+    </figure>
+  </div>
+  <div class="column" style="width:49%">
+    <figure>
+      <img src="./log/getmap_0_master_1.png" alt="" style="width:50%" >
+      <figcaption>QGIS Server Master 1</figcaption>
+    </figure>
+  </div>
+</div>

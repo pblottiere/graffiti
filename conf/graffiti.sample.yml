@@ -22,7 +22,17 @@ REQUESTS:
       LOG: True
       ITERATIONS: 5
       HOSTS:
-          - NAME: "Master"
+          - NAME: "Master 0"
+            HOST: http://37.187.164.233:8080/nightly_master_qgisserver
+            PAYLOAD_MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
+            PAYLOAD_WIDTH: 400
+            PAYLOAD_HEIGHT: 400
+            PAYLOAD_CRS: EPSG:4326
+            PAYLOAD_LAYERS: countries
+            PAYLOAD_VERSION: 1.1.0
+            PAYLOAD_FORMAT: png
+            PAYLOAD_BBOX: -53.7815,-175.136,78.2467,179.195
+          - NAME: "Master 1"
             HOST: http://37.187.164.233:8080/nightly_master_qgisserver
             PAYLOAD_MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
             PAYLOAD_WIDTH: 400
