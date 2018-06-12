@@ -18,6 +18,9 @@ class Report(object):
         src = os.path.join(dirname, 'template.html')
         shutil.copyfile(src, html)
 
+        src = os.path.join(dirname, 'style.css')
+        shutil.copyfile(src, os.path.join(os.path.dirname(html), 'style.css'))
+
         with fileinput.FileInput(html, inplace=True) as file:
             for line in file:
                 tag_date = '{{GRAFFITI_DATE}}'
@@ -46,8 +49,7 @@ class Report(object):
             self.add_png(graph)
 
     def add_png(self, graph):
-        chart = ('<hr>\n'
-                 '<h2><a>{}</a></h2>\n'
+        chart = ('<h2><a>{}</a></h2>\n'
                  '{}\n'
                  '<br/><br/>\n').format(graph.req.title, graph.req.short_desc)
 
@@ -64,24 +66,29 @@ class Report(object):
         with open(graph.req.desc) as f:
             desc = f.read()
 
-        chart = ('<hr>\n'
-                 '<h2><a>{}</a></h2>\n'
+        chart = ('<h2><a>{}</a></h2>\n'
                  '<br/>\n'
-                 '<b>Description</b>\n'
-                 '<br/><br/>\n'
+                 '<h3>Description</h3>\n'
+                 '<br/>\n'
                  '{}\n'
-                 '<br/><br/>\n'
-                 '<b>Graphics</b>').format(graph.req.title, desc)
+                 '<br/>\n'
+                 '<h3>Results</h3>').format(graph.req.title, desc)
 
-        chart += '<figure\n>'
+        chart += '<div class="row" align="center">'
         tag = ''
         for img in graph.imgs:
-            tag += ('&emsp;&emsp;&emsp;'
-                    '<embed type="image/svg+xml" width=800px src="./{}" '
-                    'align="center"/>'
+            # tag += ('&emsp;&emsp;&emsp;'
+            #         '<embed type="image/svg+xml" width=800px src="./{}" '
+            #         'align="center"/>'
+            #         .format(img))
+            tag += ('<div class="column" style="width:49%">'
+                    '<figure>'
+                    '<embed type="image/svg+xml" width=80% src="./{}" align="center"/>'
+                    '</figure>'
+                    '</div>'
                     .format(img))
 
         chart += tag
-        chart += '</figure>\n'
+        chart += '</div>'
 
         self.charts += chart
