@@ -79,7 +79,7 @@ class Request(object):
             if log:
                 log.write(host.name)
                 log.write('\n')
-                log.write('    - HOST: \n'.format(host))
+                log.write('    - HOST: {}\n'.format(host.host))
                 for key in host.payload.keys():
                     log.write('    - {}: {}\n'.format(key, host.payload[key]))
 
