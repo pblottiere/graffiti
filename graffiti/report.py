@@ -83,7 +83,7 @@ class Report(object):
             #         .format(img))
             tag += ('<div class="column" style="width:49%">'
                     '<figure>'
-                    '<embed type="image/svg+xml" width=80% src="./{}" align="center"/>'
+                    '<embed type="image/svg+xml" width=100% src="./{}" align="center"/>'
                     '</figure>'
                     '</div>'
                     .format(img))
