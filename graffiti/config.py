@@ -20,7 +20,7 @@ class ConfigHost(object):
 
 class ConfigRequest(object):
 
-    def __init__(self, cfg, basedir, logdir):
+    def __init__(self, cfg, basedir, logdir, precision=2):
         self.type = None
         if cfg['TYPE'] == Type.GetCapabilities.name:
             self.type = Type.GetCapabilities
@@ -32,6 +32,7 @@ class ConfigRequest(object):
         self.iterations = cfg['ITERATIONS']
         self.name = cfg['NAME']
         self.logdir = logdir
+        self.precision = precision
 
         self.hosts = []
         for host in cfg['HOSTS']:
@@ -51,13 +52,13 @@ class Config(object):
         os.makedirs(self.imdir)
         os.makedirs(self.logdir)
 
-
     def read(self, yml):
         self.requests = []
 
         with open(yml, 'r') as stream:
             cfg = yaml.load(stream)
 
+            self.precision = cfg['PRECISION']
             self.svg = cfg['SVG']
             self.basedir = os.path.dirname(os.path.abspath(yml))
 
@@ -67,7 +68,8 @@ class Config(object):
             self.html = os.path.join(self.outdir, cfg['HTML'])
 
             for request in cfg['REQUESTS']:
-                self.requests.append(ConfigRequest(request, self.basedir, self.logdir))
+                cfgReq = ConfigRequest(request, self.basedir, self.logdir, self.precision)
+                self.requests.append(cfgReq)
 
             self.desc = ''
             if cfg['DESCRIPTION']:

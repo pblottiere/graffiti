@@ -23,7 +23,7 @@ class Host(object):
 class Request(object):
 
     def __init__(self, name, type, hosts, iterations=50, desc='',
-                 logdir=None, title=''):
+                 logdir=None, title='', precision=2):
         self.durations = {}
         self.type = type
         self.hosts = hosts
@@ -32,6 +32,7 @@ class Request(object):
         self.desc = desc
         self.logdir = logdir
         self.title = title
+        self.precision = precision
 
     @property
     def hosts(self):
@@ -56,13 +57,14 @@ class Request(object):
         desc = cfg.description
         type = cfg.type
         logdir = cfg.logdir
+        precision = cfg.precision
 
         hosts = []
         for hostCfg in cfg.hosts:
             host = Host(hostCfg.name, hostCfg.host, hostCfg.payload)
             hosts.append(host)
 
-        return Request(name, type, hosts, iterations, desc, logdir, title)
+        return Request(name, type, hosts, iterations, desc, logdir, title, precision)
 
     def run(self):
         log = None
@@ -99,7 +101,7 @@ class Request(object):
                         r.raw.decode_content = True
                         shutil.copyfileobj(r.raw, f)
 
-                dur.append(round(time.time() - start, 4))
+                dur.append(round(time.time() - start, self.precision))
 
             self.durations[host.name] = dur
 
