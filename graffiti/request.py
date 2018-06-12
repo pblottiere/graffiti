@@ -112,7 +112,7 @@ class Request(object):
             csvfile = os.path.join(self.logdir, '{}.csv'.format(self.name))
             with open(csvfile, 'w') as f:
                 writer = csv.writer(f, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                writer.writerow(self.durations.keys())
+                writer.writerow(list(self.durations.keys()))
 
                 for i in range(0, self.iterations):
                     row = []
