@@ -95,7 +95,10 @@ class Request(object):
                 # the figure in the long description)
                 if self.logdir and j == 0 and 'FORMAT' in host.payload \
                         and 'png' in host.payload['FORMAT']:
-                    imname = '{}.png'.format(self.name)
+                    hn = host.name
+                    hn = ''.join(c for c in hn if c not in '(){}<>')
+                    hn = hn.replace(' ', '_')
+                    imname = '{}_{}.png'.format(self.name, hn.lower())
                     logres = os.path.join(self.logdir, imname)
                     with open(logres, 'wb') as f:
                         r.raw.decode_content = True
