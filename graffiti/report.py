@@ -12,8 +12,11 @@ class ReportTOCLeaf(object):
         self.name = name
         self.id = uuid.uuid4().hex
 
-    def tostr(self):
-        return '<li><a href="#{}">{}</a>'.format(self.id, self.name)
+    def tostr(self, href=True):
+        h = ''
+        if href:
+            h = 'href="#{}"'.format(self.id)
+        return '<li><a {}>{}</a>'.format(h, self.name)
 
 
 class ReportTOCNode(object):
@@ -30,19 +33,19 @@ class ReportTOCNode(object):
         s = ('{}'
              '<ul>'
              '{}'
-             '</ul>').format(self.me.tostr(), leafs)
+             '</ul>').format(self.me.tostr(False), leafs)
         return s
 
 
 class ReportTOC(object):
 
     def __init__(self):
-        self.leafs = []
+        self.nodes = {}
 
     def tostr(self):
         leaf = ''
-        for l in self.leafs:
-            leaf += l.tostr()
+        for n in self.nodes.values():
+            leaf += n.tostr()
 
         s = ('<div id="toc_container">'
              '<ul class="toc_list">'
@@ -120,13 +123,18 @@ class Report(object):
         with open(graph.req.desc) as f:
             desc = f.read()
 
-        leaf = ReportTOCLeaf(graph.req.title)
-        self.toc.leafs.append(leaf)
+        name = graph.req.type.name
+        if name not in self.toc.nodes.keys():
+            node = ReportTOCNode(name)
+            self.toc.nodes[name] = node
 
-        chart = ('<h2 id="{}">{}</h2>\n'
+        leaf = ReportTOCLeaf(graph.req.title)
+        self.toc.nodes[name].leafs.append(leaf)
+
+        chart = ('<h2 id="{}">{}: {}</h2>\n'
                  '<h3>Description</h3>\n'
                  '{}\n'
-                 '<h3>Results</h3>').format(leaf.id, graph.req.title, desc)
+                 '<h3>Results</h3>').format(leaf.id, name, graph.req.title, desc)
 
         chart += '<div class="row" align="center">'
         tag = ''
