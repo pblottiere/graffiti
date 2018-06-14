@@ -88,7 +88,7 @@ much as you want (while the `NAME` parameter of the request is unique).
 Regarding HTML description files, they have to be in the same location than
 the configuration file. Note that if `LOG` parameter is true for `GetMap`
 requests, then the resulting image is stored for the first iteration in the
-`OUTPUT/log` directory for each host. This way, you may include some of these
+`OUTDIR/log` directory for each host. This way, you may include some of these
 images in the description.
 
 #### Run
@@ -115,7 +115,7 @@ Iterations: 4%|█████▋                           | 1/25 [00:01<00:30,
 #### Results
 
 HTML report, SVG graphs and logs are generated in the output directory
-`$OUTPUT`:
+`OUTDIR`:
 
 ```
 (venv)$ ls /tmp/graffiti
@@ -128,7 +128,7 @@ Instead of using the `graffiti.py` Python script, you can use the graffiti API
 (work in progress). For example:
 
 ``` Python
-import shutil                                                                                                                                                                                  
+import shutil
 import os
 
 from graffiti.request import Request, Type, Host
