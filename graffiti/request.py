@@ -7,6 +7,22 @@ import os
 import requests
 
 
+class Error(object):
+
+    def __init__(self, name, host, code, text):
+        self.name = name
+        self.host = host
+        self.code = code
+        self.text = text
+
+    def tostr(self):
+        return ('REQUEST: {}\n'
+                'HOST: {}\n'
+                'ERROR: {}\n'
+                'DESCRIPTION: {}\n'
+                .format(self.name, self.host, self.code, self.text))
+
+
 class Type(Enum):
     GetCapabilities = 1
     GetMap = 2
@@ -33,6 +49,7 @@ class Request(object):
         self.logdir = logdir
         self.title = title
         self.precision = precision
+        self.errors = []
 
     @property
     def hosts(self):
@@ -64,7 +81,8 @@ class Request(object):
             host = Host(hostCfg.name, hostCfg.host, hostCfg.payload)
             hosts.append(host)
 
-        return Request(name, type, hosts, iterations, desc, logdir, title, precision)
+        return Request(name, type, hosts, iterations, desc, logdir, title,
+                       precision)
 
     def run(self):
         log = None
@@ -85,10 +103,20 @@ class Request(object):
 
             for j in trange(self.iterations, leave=False, desc='Iterations'):
                 start = time.time()
-                r = requests.get(host.host, params=host.payload, stream=True)
+
+                try:
+                    r = requests.get(host.host, params=host.payload,
+                                     stream=True)
+                except requests.exceptions.RequestException as e:
+                    err = Error(self.name, host.name, 'Exception', e)
+                    self.errors.append(err)
+                    dur.append(0)
+                    continue
 
                 if r.status_code != 200:
-                    print("ERROR CODE: {}".format(r.status_code))
+                    e = Error(self.name, host.name, r.status_code, r.text)
+                    self.errors.append(e)
+                    dur.append(0)
                     continue
 
                 # log 1st iteration when it's an image (to be able to include
@@ -114,7 +142,8 @@ class Request(object):
         if self.logdir:
             csvfile = os.path.join(self.logdir, '{}.csv'.format(self.name))
             with open(csvfile, 'w') as f:
-                writer = csv.writer(f, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer = csv.writer(f, delimiter=' ', quotechar='|',
+                                    quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(list(self.durations.keys()))
 
                 for i in range(0, self.iterations):

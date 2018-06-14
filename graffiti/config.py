@@ -43,7 +43,6 @@ class Config(object):
 
     def __init__(self, yml):
         self.html = None
-        self.svg = True
         self.requests = []
         self.read(yml)
 
@@ -59,7 +58,6 @@ class Config(object):
             cfg = yaml.load(stream)
 
             self.precision = cfg['PRECISION']
-            self.svg = cfg['SVG']
             self.basedir = os.path.dirname(os.path.abspath(yml))
 
             self.outdir = cfg['OUTDIR']

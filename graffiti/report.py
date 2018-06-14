@@ -100,28 +100,10 @@ class Report(object):
                 print(line)
 
     def add(self, graph):
-        if graph.svg:
-            self.add_svg(graph)
-        else:
-            self.add_png(graph)
-
-    def add_png(self, graph):
-        chart = ('<h2><a>{}</a></h2>\n'
-                 '{}\n'
-                 '<br/><br/>\n').format(graph.req.title, graph.req.short_desc)
-
-        for img in graph.imgs:
-            i = base64.b64encode(open(img, 'rb').read()).decode('utf-8')
-            tag = ('<img src="data:image/png;base64,{}" align="center"/>\n'
-                   .format(i))
-            chart += tag
-
-        self.charts += chart
-
-    def add_svg(self, graph):
         desc = ''
-        with open(graph.req.desc) as f:
-            desc = f.read()
+        if graph.req.desc:
+            with open(graph.req.desc) as f:
+                desc = f.read()
 
         name = graph.req.type.name
         if name not in self.toc.nodes.keys():
