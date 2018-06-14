@@ -1,0 +1,24 @@
+Master 0
+    - HOST: http://37.187.164.233:8080/nightly_master_qgisserver
+    - HEIGHT: 400
+    - CRS: EPSG:4326
+    - BBOX: -53.7815,-175.136,78.2467,179.195
+    - SERVICE: WMS
+    - LAYERS: countries
+    - REQUEST: GetMap
+    - FORMAT: png
+    - WIDTH: 400
+    - VERSION: 1.1.0
+    - MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
+Master 1
+    - HOST: http://37.187.164.233:8080/nightly_master_qgisserver
+    - HEIGHT: 400
+    - CRS: EPSG:4326
+    - BBOX: -53.7815,-175.136,78.2467,179.195
+    - SERVICE: WMS
+    - LAYERS: countries
+    - REQUEST: GetMap
+    - FORMAT: png
+    - WIDTH: 400
+    - VERSION: 1.1.0
+    - MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
