@@ -1,13 +1,13 @@
 OUTDIR: /tmp/graffiti/
 HTML: report.html
 SVG: True
-DESCRIPTION: description.txt
+DESCRIPTION: description.html
 PRECISION: 2
 REQUESTS:
     - NAME: getcapabilities_0
       TYPE: GetCapabilities
       TITLE: "Default"
-      DESCRIPTION: getcapabilities.txt
+      DESCRIPTION: getcapabilities.html
       LOG: True
       ITERATIONS: 5
       HOSTS:
@@ -18,7 +18,7 @@ REQUESTS:
     - NAME: getmap_0
       TYPE: GetMap
       TITLE: "Default"
-      DESCRIPTION: getmap.txt
+      DESCRIPTION: getmap.html
       LOG: True
       ITERATIONS: 5
       HOSTS:
