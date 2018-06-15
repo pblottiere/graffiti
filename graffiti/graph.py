@@ -16,7 +16,10 @@ class Graph(object):
         self.draw_box(imdir)
 
     def draw_box(self, imdir):
-        box = pygal.Box(style=STYLE)
+        ds = self.req.durations
+        title = '{} iterations'.format(len(list(ds.values())[0]))
+        box = pygal.Box(x_title=title, y_title='Response time in sec',
+                        style=STYLE)
         box.title = '{}'.format(self.req.type.name)
 
         for name in self.req.durations.keys():
@@ -39,7 +42,8 @@ class Graph(object):
             return
 
         title = '{} iterations'.format(len(list(ds.values())[0]))
-        line = pygal.Line(x_title=title, y_title='Response time', style=STYLE)
+        line = pygal.Line(x_title=title, y_title='Response time in sec',
+                          style=STYLE)
         line.title = '{}'.format(self.req.type.name)
 
         for name in ds.keys():
