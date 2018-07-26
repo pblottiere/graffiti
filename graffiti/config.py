@@ -42,15 +42,16 @@ class ConfigRequest(object):
 
 class Config(object):
 
-    def __init__(self, yml):
+    def __init__(self, yml, new=True):
         self.html = None
         self.requests = []
         self.read(yml)
 
-        shutil.rmtree(self.outdir, ignore_errors=True)
-        os.makedirs(self.outdir)
-        os.makedirs(self.imdir)
-        os.makedirs(self.logdir)
+        if new:
+            shutil.rmtree(self.outdir, ignore_errors=True)
+            os.makedirs(self.outdir)
+            os.makedirs(self.imdir)
+            os.makedirs(self.logdir)
 
         format = '%Y-%m-%d %H:%M:%S'
         self.date = datetime.datetime.now().strftime(format)
