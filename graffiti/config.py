@@ -47,18 +47,22 @@ class Config(object):
         self.requests = []
         self.read(yml)
 
+        datefile = os.path.join(self.outdir, 'date')
+        format = '%Y-%m-%d %H:%M:%S'
         if new:
             shutil.rmtree(self.outdir, ignore_errors=True)
             os.makedirs(self.outdir)
             os.makedirs(self.imdir)
             os.makedirs(self.logdir)
 
-        format = '%Y-%m-%d %H:%M:%S'
-        self.date = datetime.datetime.now().strftime(format)
-        if self.outdir:
-            logfile = os.path.join(self.outdir, 'date')
-            with open(logfile, 'w+') as log:
-                log.write(self.date)
+            self.date = datetime.datetime.now().strftime(format)
+            if self.outdir:
+                with open(datefile, 'w+') as log:
+                    log.write(self.date)
+        else:
+            if os.path.isfile(datefile):
+                with open(datefile, 'r') as f:
+                    self.date = f.read()
 
     def read(self, yml):
         self.requests = []
