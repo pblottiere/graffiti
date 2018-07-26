@@ -1,9 +1,7 @@
 import fileinput
 import shutil
-import base64
 import os
 import uuid
-import datetime
 
 
 class ReportTOCLeaf(object):
@@ -58,7 +56,8 @@ class ReportTOC(object):
 
 class Report(object):
 
-    def __init__(self):
+    def __init__(self, date):
+        self.date = date
         self.charts = ''
         self.toc = ReportTOC()
 
@@ -77,9 +76,7 @@ class Report(object):
             for line in file:
                 tag_date = '{{GRAFFITI_DATE}}'
                 if tag_date in line:
-                    format = '%Y-%m-%d %H:%M:%S'
-                    date = datetime.datetime.now().strftime(format)
-                    print(line.replace(tag_date, date), end='')
+                    print(line.replace(tag_date, self.date), end='')
                     continue
 
                 tag_charts = '{{GRAFFITI_CHARTS}}'

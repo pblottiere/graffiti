@@ -30,7 +30,7 @@ if __name__ == "__main__":
         sys.stdout.write(SPLASH)
 
         cfg = Config(args.cfg)
-        report = Report()
+        report = Report(cfg.date)
 
         errors = []
         start = time.time()

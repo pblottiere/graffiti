@@ -1,6 +1,7 @@
 import yaml
 import shutil
 import os
+import datetime
 
 from.request import Type
 
@@ -50,6 +51,13 @@ class Config(object):
         os.makedirs(self.outdir)
         os.makedirs(self.imdir)
         os.makedirs(self.logdir)
+
+        format = '%Y-%m-%d %H:%M:%S'
+        self.date = datetime.datetime.now().strftime(format)
+        if self.outdir:
+            logfile = os.path.join(self.outdir, 'date')
+            with open(logfile, 'w+') as log:
+                log.write(self.date)
 
     def read(self, yml):
         self.requests = []
