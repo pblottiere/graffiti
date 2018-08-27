@@ -2,6 +2,7 @@ import fileinput
 import shutil
 import os
 import uuid
+import datetime
 
 
 class ReportTOCLeaf(object):
@@ -56,8 +57,13 @@ class ReportTOC(object):
 
 class Report(object):
 
-    def __init__(self, date):
-        self.date = date
+    def __init__(self, date=None):
+        if date:
+            self.date = date
+        else:
+            format = '%Y-%m-%d %H:%M:%S'
+            self.date = datetime.datetime.now().strftime(format)
+
         self.charts = ''
         self.toc = ReportTOC()
 
@@ -72,29 +78,33 @@ class Report(object):
         src = os.path.join(dirname, 'style.css')
         shutil.copyfile(src, os.path.join(os.path.dirname(html), 'style.css'))
 
-        with fileinput.FileInput(html, inplace=True) as file:
-            for line in file:
-                tag_date = '{{GRAFFITI_DATE}}'
-                if tag_date in line:
-                    print(line.replace(tag_date, self.date), end='')
-                    continue
+        file = fileinput.FileInput(html, inplace=True)
 
-                tag_charts = '{{GRAFFITI_CHARTS}}'
-                if tag_charts in line:
-                    print(line.replace(tag_charts, self.charts), end='')
-                    continue
+        for line in file:
+            tag_date = '{{GRAFFITI_DATE}}'
+            if tag_date in line:
+                # print(line.replace(tag_date, self.date), end='')
+                print line.replace(tag_date, self.date),
+                continue
 
-                tag_desc = '{{GRAFFITI_DESCRIPTION}}'
-                if tag_desc in line:
-                    print(line.replace(tag_desc, desc), end='')
-                    continue
+            tag_charts = '{{GRAFFITI_CHARTS}}'
+            if tag_charts in line:
+                print line.replace(tag_charts, self.charts),
+                continue
 
-                tag_toc = '{{GRAFFITI_TOC}}'
-                if tag_toc in line:
-                    print(line.replace(tag_toc, self.toc.tostr()), end='')
-                    continue
+            tag_desc = '{{GRAFFITI_DESCRIPTION}}'
+            if tag_desc in line:
+                print line.replace(tag_desc, desc),
+                continue
 
-                print(line)
+            tag_toc = '{{GRAFFITI_TOC}}'
+            if tag_toc in line:
+                print line.replace(tag_toc, self.toc.tostr()),
+                continue
+
+            print(line)
+
+        file.close()
 
     def add(self, graph):
         desc = ''
