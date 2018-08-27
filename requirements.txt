@@ -1,4 +1,5 @@
 cairosvg==1.0.22
+enum34
 pyaml
 pygal
 requests
