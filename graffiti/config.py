@@ -29,7 +29,9 @@ class ConfigRequest(object):
             self.type = Type.GetMap
 
         self.title = cfg['TITLE']
-        self.description = os.path.join(basedir, cfg['DESCRIPTION'])
+        self.description = None
+        if cfg['DESCRIPTION']:
+            self.description = os.path.join(basedir, cfg['DESCRIPTION'])
         self.iterations = cfg['ITERATIONS']
         self.name = cfg['NAME']
         self.logdir = logdir
