@@ -92,5 +92,5 @@ class Config(object):
                     self.desc = f.read()
 
             self.database = None
-            if cfg['DATABASE']:
+            if 'DATABASE' in cfg and cfg['DATABASE']:
                 self.database = cfg['DATABASE']

@@ -6,19 +6,22 @@ import sqlite3
 class Database(object):
 
     def __init__(self, name):
-        sharedir = os.path.expanduser('~') + os.sep + '.local' \
-            + os.sep + 'share' + os.sep + 'graffiti'
-        if not os.path.exists(sharedir):
-            os.makedirs(sharedir)
-
         self.table = 'durations'
         self.filename = None
         self.con = None
         if name:
-            self.filename = os.path.join(sharedir, name)
+            self.filename = Database.path(name)
             self.con = sqlite3.connect(self.filename)
 
             self.__init()
+
+    @staticmethod
+    def path(filename):
+        sharedir = os.path.expanduser('~') + os.sep + '.local' \
+            + os.sep + 'share' + os.sep + 'graffiti'
+        if not os.path.exists(sharedir):
+            os.makedirs(sharedir)
+        return os.path.join(sharedir, filename)
 
     def log(self, request):
         if not self.con:

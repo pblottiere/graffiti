@@ -4,6 +4,7 @@ import argparse
 import os
 import time
 import sys
+import subprocess
 from tqdm import trange
 from graffiti import (Config,
                       Request,
@@ -22,15 +23,25 @@ SPLASH = (''
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Graffiti')
-    parser.add_argument('--cfg', type=str, help='YAML configuration file')
+    parser.add_argument('-c', '--cfg', type=str, help='YAML configuration file')
+    parser.add_argument('-s', '--sqlite', action='store_true', help='Open the database')
     args = parser.parse_args()
 
     if not args.cfg:
         parser.print_help()
     elif (os.path.isfile(args.cfg)):
-        sys.stdout.write(SPLASH)
-
         cfg = Config(args.cfg)
+
+        # subcommands
+        if args.sqlite:
+            if not cfg.database:
+                sys.stdout.write('Cannot open the database!\n')
+                sys.exit(1)
+            subprocess.run(['sqlite3', Database.path(cfg.database)])
+            sys.exit(0)
+
+        # scenario
+        sys.stdout.write(SPLASH)
         report = Report(cfg.date)
         database = Database(cfg.database)
 
