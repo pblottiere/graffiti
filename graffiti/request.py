@@ -1,10 +1,10 @@
 import time
 from enum import Enum
-from tqdm import trange
 import csv
 import shutil
 import os
 import requests
+from tqdm import trange
 
 
 class Error(object):

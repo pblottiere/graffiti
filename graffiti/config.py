@@ -3,6 +3,7 @@ import shutil
 import os
 import datetime
 
+from .database import Database
 from.request import Type
 
 
@@ -89,3 +90,7 @@ class Config(object):
                 path = os.path.join(self.basedir, cfg['DESCRIPTION'])
                 with open(path) as f:
                     self.desc = f.read()
+
+            self.database = None
+            if cfg['DATABASE']:
+                self.database = cfg['DATABASE']

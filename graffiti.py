@@ -8,6 +8,7 @@ from tqdm import trange
 from graffiti import (Config,
                       Request,
                       Graph,
+                      Database,
                       Report)
 
 SPLASH = (''
@@ -31,12 +32,14 @@ if __name__ == "__main__":
 
         cfg = Config(args.cfg)
         report = Report(cfg.date)
+        database = Database(cfg.database)
 
         errors = []
         start = time.time()
         for i in trange(len(cfg.requests), desc='Requests'):
             req = Request.build(cfg.requests[i])
             req.run()
+            database.log(req)
 
             if req.errors:
                 errors += req.errors
@@ -47,6 +50,7 @@ if __name__ == "__main__":
             report.add(graph)
 
         report.write(cfg.html, cfg.desc)
+        database.close()
 
         # final log
         dur = round(time.time() - start, 1)
