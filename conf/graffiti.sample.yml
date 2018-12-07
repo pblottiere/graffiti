@@ -1,5 +1,6 @@
 OUTDIR: /tmp/graffiti/
 HTML: report.html
+DATABASE: graffiti.db
 SVG: True
 DESCRIPTION: description.html
 PRECISION: 2
