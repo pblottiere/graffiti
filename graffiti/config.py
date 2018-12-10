@@ -94,3 +94,42 @@ class Config(object):
             self.database = None
             if 'DATABASE' in cfg and cfg['DATABASE']:
                 self.database = cfg['DATABASE']
+
+
+class SummaryConfig(object):
+
+    def __init__(self, yml):
+        self.read(yml)
+
+    def read(self, yml):
+
+        with open(yml, 'r') as stream:
+            cfg = yaml.load(stream)
+
+            self.outdir = cfg['OUTDIR']
+            self.imdir = os.path.join(self.outdir, 'graph')
+            self.html = os.path.join(self.outdir, cfg['HTML'])
+            self.logdir = os.path.join(self.outdir, 'log')
+
+            dirname = os.path.dirname(yml)
+            self.report_cfg = Config(os.path.join(dirname, cfg['REPORT_YML']), False)
+
+            shutil.rmtree(self.outdir, ignore_errors=True)
+            os.makedirs(self.imdir)
+            shutil.copytree(self.report_cfg.logdir, self.logdir)
+
+    @property
+    def date(self):
+        return self.report_cfg.date
+
+    @property
+    def database(self):
+        return self.report_cfg.database
+
+    @property
+    def requests(self):
+        return self.report_cfg.requests
+
+    @property
+    def desc(self):
+        return self.report_cfg.desc

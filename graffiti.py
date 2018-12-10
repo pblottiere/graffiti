@@ -9,6 +9,7 @@ import yaml
 import shutil
 from tqdm import trange
 from graffiti import (Config,
+                      SummaryConfig,
                       Request,
                       Graph,
                       Type,
@@ -83,35 +84,16 @@ def scenario(cfg):
 
 def summary(cfg):
 
-    config = None
-    outdir = None
-    imdir = None
-    html = None
-    with open(cfg, 'r') as stream:
-        config = yaml.load(stream)
+    config = SummaryConfig(cfg)
 
-        outdir = config['OUTDIR']
-        shutil.rmtree(outdir, ignore_errors=True)
-        os.makedirs(outdir)
-
-        imdir = os.path.join(outdir, 'graph')
-        os.makedirs(imdir)
-
-        html = os.path.join(outdir, config['HTML'])
-
-        logdir = os.path.join(outdir, 'log')
-
-    dirname = os.path.dirname(os.path.abspath(cfg))
-    report_cfg = Config(os.path.join(dirname, config['CFG']), False)
-
-    if not report_cfg.database:
+    if not config.database:
         sys.stdout.write('Cannot open the database!\n')
         sys.exit(1)
 
-    report = Report(report_cfg.date)
+    report = Report(config.date)
 
-    database = Database(report_cfg.database)
-    for request in report_cfg.requests:
+    database = Database(config.database)
+    for request in config.requests:
         stats = database.stats(request.name)
 
         if not stats:
@@ -121,14 +103,12 @@ def summary(cfg):
         req.durations = stats
 
         graph = Graph(req)
-        graph.draw(imdir)
+        graph.draw(config.imdir)
 
         report.add(graph)
 
-    report.write(html, report_cfg.desc)
+    report.write(config.html, config.desc)
     database.close()
-
-    shutil.copytree(report_cfg.logdir, logdir)
 
 
 if __name__ == "__main__":
