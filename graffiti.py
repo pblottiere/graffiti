@@ -5,14 +5,11 @@ import os
 import time
 import sys
 import subprocess
-import yaml
-import shutil
 from tqdm import trange
 from graffiti import (Config,
                       SummaryConfig,
                       Request,
                       Graph,
-                      Type,
                       Database,
                       Report)
 
