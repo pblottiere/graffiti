@@ -23,6 +23,66 @@ class Database(object):
             os.makedirs(sharedir)
         return os.path.join(sharedir, filename)
 
+    def requests(self):
+        sql = ('select distinct request from durations')
+        cur = self.con.cursor()
+        cur.execute(sql)
+
+        requests = []
+        for r in cur.fetchall():
+            requests.append(r[0])
+
+        return requests
+
+    def hosts(self, request):
+        sql = ('SELECT distinct host from durations where request = \'{}\''
+               .format(request))
+        cur = self.con.cursor()
+        cur.execute(sql)
+
+        hosts = []
+        for r in cur.fetchall():
+            hosts.append(r[0])
+
+        return hosts
+
+    def stats(self, request):
+
+        mini = {}
+        mean = {}
+        maxi = {}
+
+        for host in self.hosts(request):
+            sql = ('select min, mean, max from durations where '
+                   'request=\'{}\' and host=\'{}\''
+                   .format(request, host))
+            cur = self.con.cursor()
+            cur.execute(sql)
+
+            min_name = host + '(minimum)'
+            mean_name = host + '(mean)'
+            max_name = host + '(maximum)'
+
+            mini[min_name] = []
+            mean[mean_name] = []
+            maxi[max_name] = []
+
+            for r in cur.fetchall():
+                if float(r[0]) > 0.01:
+                    mini[min_name].append(r[0])
+
+                if float(r[1]) > 0.01:
+                    mean[mean_name].append(r[1])
+
+                if float(r[2]) > 0.01:
+                    maxi[max_name].append(r[2])
+
+        stats = mini
+        stats.update(mean)
+        stats.update(maxi)
+
+        return stats
+
     def log(self, request):
         if not self.con:
             return False
