@@ -46,42 +46,24 @@ class Database(object):
 
         return hosts
 
-    def stats(self, request):
+    def means(self, request):
 
-        mini = {}
-        mean = {}
-        maxi = {}
+        means = {}
 
         for host in self.hosts(request):
-            sql = ('select min, mean, max from durations where '
+            sql = ('select mean from durations where '
                    'request=\'{}\' and host=\'{}\''
                    .format(request, host))
             cur = self.con.cursor()
             cur.execute(sql)
 
-            min_name = host + '(minimum)'
-            mean_name = host + '(mean)'
-            max_name = host + '(maximum)'
-
-            mini[min_name] = []
-            mean[mean_name] = []
-            maxi[max_name] = []
+            means[host] = []
 
             for r in cur.fetchall():
                 if float(r[0]) > 0.01:
-                    mini[min_name].append(r[0])
+                    means[host].append(r[0])
 
-                if float(r[1]) > 0.01:
-                    mean[mean_name].append(r[1])
-
-                if float(r[2]) > 0.01:
-                    maxi[max_name].append(r[2])
-
-        stats = mini
-        stats.update(mean)
-        stats.update(maxi)
-
-        return stats
+        return means
 
     def log(self, request):
         if not self.con:

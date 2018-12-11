@@ -91,13 +91,13 @@ def summary(cfg):
 
     database = Database(config.database)
     for request in config.requests:
-        stats = database.stats(request.name)
+        means = database.means(request.name)
 
-        if not stats:
+        if not means:
             continue
 
         req = Request.build(request)
-        req.durations = stats
+        req.durations = means
 
         graph = Graph(req)
         graph.draw(config.imdir)
