@@ -56,8 +56,9 @@ class ReportTOC(object):
 
 class Report(object):
 
-    def __init__(self, date):
+    def __init__(self, title, date):
         self.date = date
+        self.title = title
         self.charts = ''
         self.toc = ReportTOC()
 
@@ -74,6 +75,11 @@ class Report(object):
 
         with fileinput.FileInput(html, inplace=True) as file:
             for line in file:
+                tag_title = '{{GRAFFITI_TITLE}}'
+                if tag_title in line:
+                    print(line.replace(tag_title, self.title), end='')
+                    continue
+
                 tag_date = '{{GRAFFITI_DATE}}'
                 if tag_date in line:
                     print(line.replace(tag_date, self.date), end='')

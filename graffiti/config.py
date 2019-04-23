@@ -73,6 +73,7 @@ class Config(object):
         with open(yml, 'r') as stream:
             cfg = yaml.load(stream)
 
+            self.title = cfg['TITLE']
             self.precision = cfg['PRECISION']
             self.basedir = os.path.dirname(os.path.abspath(yml))
 
