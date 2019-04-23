@@ -39,6 +39,23 @@ class Database(object):
             self.__store(name, host.name, date, min_duration, avg_duration,
                          max_duration)
 
+    def means(self, request, min=0.1, limit=30):
+        name = request.name
+
+        means = {}
+        for host in request.hosts:
+            sql = ('SELECT date,round(mean, 2) FROM durations WHERE '
+                   'request=\'{request}\' AND host=\'{host}\' '
+                   'AND mean >= {min} LIMIT {limit}'
+                   .format(request=name, host=host.name, min=min, limit=limit))
+
+            cur = self.con.cursor()
+            cur.execute(sql)
+
+            means[host.name] = cur.fetchall()
+
+        return means
+
     def close(self):
         if self.con:
             self.con.close()
