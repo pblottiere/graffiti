@@ -102,6 +102,11 @@ class Report(object):
             with open(graph.req.desc) as f:
                 desc = f.read()
 
+            if desc:
+                desc = ('<h3>Description</h3>\n'
+                        '{}\n'
+                        .format(desc))
+
         name = graph.req.type.name
         if name not in self.toc.nodes.keys():
             node = ReportTOCNode(name)
@@ -111,7 +116,6 @@ class Report(object):
         self.toc.nodes[name].leafs.append(leaf)
 
         chart = ('<h2 id="{}">{}: {}</h2>\n'
-                 '<h3>Description</h3>\n'
                  '{}\n'
                  '<h3>Results</h3>').format(leaf.id, name, graph.req.title, desc)
 
