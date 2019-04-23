@@ -15,10 +15,14 @@ class Graph(object):
         self.draw_temporal(imdir)
         self.draw_box(imdir)
 
-    def draw_box(self, imdir):
+    def draw_box(self, imdir, x_title=None):
         ds = self.req.durations
-        title = '{} iterations'.format(len(list(ds.values())[0]))
-        box = pygal.Box(x_title=title, y_title='Response time in sec',
+
+        graph_x_title = '{} iterations'.format(len(list(ds.values())[0]))
+        if x_title:
+            graph_x_title = x_title
+
+        box = pygal.Box(x_title=graph_x_title, y_title='Response time in sec',
                         style=STYLE)
         box.title = '{}'.format(self.req.type.name)
 
@@ -36,15 +40,21 @@ class Graph(object):
 
         self.imgs.append(os.path.join('graph', os.path.basename(img)))
 
-    def draw_temporal(self, imdir):
+    def draw_temporal(self, imdir, x_title=None, x_labels=None, x_label_rotation=0):
         ds = self.req.durations
         if len(ds) <= 0:
             return
 
-        title = '{} iterations'.format(len(list(ds.values())[0]))
-        line = pygal.Line(x_title=title, y_title='Response time in sec',
-                          style=STYLE)
+        graph_x_title = '{} iterations'.format(len(list(ds.values())[0]))
+        if x_title:
+            graph_x_title = x_title
+
+        line = pygal.Line(x_title=graph_x_title, y_title='Response time in sec',
+                          style=STYLE, x_label_rotation=x_label_rotation)
         line.title = '{}'.format(self.req.type.name)
+
+        if x_labels:
+            line.x_labels = x_labels
 
         for name in ds.keys():
             line.add(name, ds[name])
