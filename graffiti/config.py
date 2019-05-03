@@ -71,7 +71,7 @@ class Config(object):
         self.requests = []
 
         with open(yml, 'r') as stream:
-            cfg = yaml.load(stream)
+            cfg = yaml.load(stream, Loader=yaml.FullLoader)
 
             self.title = cfg['TITLE']
             self.precision = cfg['PRECISION']
