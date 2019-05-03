@@ -71,11 +71,12 @@ class Config(object):
         self.requests = []
 
         with open(yml, 'r') as stream:
-            cfg = yaml.load(stream)
+            cfg = yaml.load(stream, Loader=yaml.FullLoader)
 
             self.title = cfg['TITLE']
             self.precision = cfg['PRECISION']
             self.basedir = os.path.dirname(os.path.abspath(yml))
+            self.logo = os.path.join(self.basedir, cfg['LOGO'])
 
             self.outdir = cfg['OUTDIR']
             self.imdir = os.path.join(self.outdir, 'graph')

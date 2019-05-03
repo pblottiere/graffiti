@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
         # scenario
         sys.stdout.write(SPLASH)
-        report = Report(cfg.title, cfg.date)
+        report = Report(cfg.title, cfg.date, cfg.logo)
         database = Database(cfg.database)
 
         errors = []
