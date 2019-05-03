@@ -56,9 +56,10 @@ class ReportTOC(object):
 
 class Report(object):
 
-    def __init__(self, title, date):
+    def __init__(self, title, date, logo):
         self.date = date
         self.title = title
+        self.logo = logo
         self.charts = ''
         self.toc = ReportTOC()
 
@@ -69,6 +70,8 @@ class Report(object):
         dirname = os.path.dirname(os.path.abspath(__file__))
         src = os.path.join(dirname, 'template.html')
         shutil.copyfile(src, html)
+
+        shutil.copyfile(self.logo, os.path.join(os.path.dirname(html), 'logo.png'))
 
         src = os.path.join(dirname, 'style.css')
         shutil.copyfile(src, os.path.join(os.path.dirname(html), 'style.css'))

@@ -2,6 +2,7 @@ OUTDIR: /tmp/graffiti/
 HTML: report.html
 DATABASE: graffiti.db
 TITLE: QGIS Server Performance Report
+LOGO: qgis.png
 SVG: True
 DESCRIPTION: description.html
 PRECISION: 2
