@@ -5,6 +5,7 @@ import shutil
 import os
 import requests
 from collections import OrderedDict
+import psycopg2
 from tqdm import trange
 
 
@@ -82,8 +83,12 @@ class Request(object):
             host = Host(hostCfg.name, hostCfg.host, hostCfg.payload)
             hosts.append(host)
 
-        return Request(name, type, hosts, iterations, desc, logdir, title,
-                       precision)
+        if cfg.provider == 'POSTGRES':
+            return DBRequest(name, type, hosts, iterations, desc, logdir,
+                             title, precision, cfg.db_config)
+        else:
+            return Request(name, type, hosts, iterations, desc, logdir,
+                           title, precision)
 
     def run(self):
         log = None
@@ -103,6 +108,9 @@ class Request(object):
                     log.write('    - {}: {}\n'.format(key, host.payload[key]))
 
             for j in trange(self.iterations, leave=False, desc='Iterations'):
+
+                self.before_request(log)
+
                 start = time.time()
 
                 try:
@@ -135,6 +143,8 @@ class Request(object):
 
                 dur.append(round(time.time() - start, self.precision))
 
+                self.after_request(log, host)
+
             self.durations[host.name] = dur
 
         if log:
@@ -153,6 +163,12 @@ class Request(object):
                         row.append(self.durations[key][i])
                     writer.writerow(row)
 
+    def before_request(self, log):
+        pass
+
+    def after_request(self, log):
+        pass
+
     def save(self, path):
         with open(path, 'w') as f:
             for host in self.hosts:
@@ -160,3 +176,38 @@ class Request(object):
                 f.write(' ')
                 f.write(' '.join(map(str, self.durations[host.name])))
                 f.write('\n')
+
+
+class DBRequest(Request):
+
+    def __init__(self, name, type, hosts, iterations=50, desc='',
+                 logdir=None, title='', precision=2, db_config=None):
+
+        super().__init__(name, type, hosts, iterations, desc,
+                         logdir, title, precision)
+
+        self.pcon = psycopg2.connect(
+            "host={} port={} dbname={} user={} password={}".format(
+                db_config.host, db_config.port, db_config.name, db_config.user,
+                db_config.password))
+
+        self.pcur = self.pcon.cursor()
+
+    def before_request(self, log):
+        # reinit db statistics
+        self.pcur.execute("select pg_stat_statements_reset()")
+        self.pcon.commit()
+
+    def after_request(self, log, host):
+        self.pcur.execute("""
+        SELECT sum(total_time), string_agg(query, ',')
+        FROM pg_stat_statements
+        WHERE query != 'select pg_stat_statements_reset()'
+        AND query != 'BEGIN' AND QUERY != 'COMMIT'
+        """)
+
+        total_time, query = self.pcur.fetchone()
+        name = host.name + " (database)"
+        if name not in self.durations:
+            self.durations[name] = []
+        self.durations[name].append(total_time/1000 if total_time else 0)

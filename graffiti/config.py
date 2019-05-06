@@ -3,7 +3,6 @@ import shutil
 import os
 import datetime
 
-from .database import Database
 from.request import Type
 
 
@@ -20,9 +19,19 @@ class ConfigHost(object):
                 self.payload[newkey] = cfg[key]
 
 
+class ConfigDatabase(object):
+
+    def __init__(self, cfg):
+        self.host = cfg.get('DB_HOST', '127.0.0.1')
+        self.port = cfg.get('DB_PORT', 5432)
+        self.name = cfg.get('DB_NAME', '')
+        self.user = cfg.get('DB_USER', 'postgres')
+        self.password = cfg.get('DB_PASSWORD', '')
+
+
 class ConfigRequest(object):
 
-    def __init__(self, cfg, basedir, logdir, precision=2):
+    def __init__(self, cfg, basedir, logdir, precision=2, db_config=None):
         self.type = None
         if cfg['TYPE'] == Type.GetCapabilities.name:
             self.type = Type.GetCapabilities
@@ -37,6 +46,8 @@ class ConfigRequest(object):
         self.name = cfg['NAME']
         self.logdir = logdir
         self.precision = precision
+        self.provider = cfg.get('PROVIDER', None)
+        self.db_config = db_config
 
         self.hosts = []
         for host in cfg['HOSTS']:
@@ -77,6 +88,7 @@ class Config(object):
             self.precision = cfg['PRECISION']
             self.basedir = os.path.dirname(os.path.abspath(yml))
             self.logo = os.path.join(self.basedir, cfg['LOGO'])
+            self.db_config = ConfigDatabase(cfg)
 
             self.outdir = cfg['OUTDIR']
             self.imdir = os.path.join(self.outdir, 'graph')
@@ -84,7 +96,8 @@ class Config(object):
             self.html = os.path.join(self.outdir, cfg['HTML'])
 
             for request in cfg['REQUESTS']:
-                cfgReq = ConfigRequest(request, self.basedir, self.logdir, self.precision)
+                cfgReq = ConfigRequest(request, self.basedir, self.logdir,
+                                       self.precision, self.db_config)
                 self.requests.append(cfgReq)
 
             self.desc = ''
