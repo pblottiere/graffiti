@@ -46,7 +46,7 @@ class ConfigRequest(object):
         self.name = cfg['NAME']
         self.logdir = logdir
         self.precision = precision
-        self.provider = cfg.get('PROVIDER', None)
+        self.provider = cfg.get('PROVIDER')
         self.db_config = db_config
 
         self.hosts = []
