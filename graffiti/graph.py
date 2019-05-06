@@ -23,7 +23,7 @@ class Graph(object):
             graph_x_title = x_title
 
         box = pygal.Box(x_title=graph_x_title, y_title='Response time in sec',
-                        style=STYLE)
+                        style=STYLE, truncate_legend=-1)
         box.title = '{}'.format(self.req.type.name)
 
         for name in self.req.durations.keys():
@@ -50,7 +50,8 @@ class Graph(object):
             graph_x_title = x_title
 
         line = pygal.Line(x_title=graph_x_title, y_title='Response time in sec',
-                          style=STYLE, x_label_rotation=x_label_rotation)
+                          style=STYLE, x_label_rotation=x_label_rotation,
+                          truncate_legend=-1)
         line.title = '{}'.format(self.req.type.name)
 
         if x_labels:
