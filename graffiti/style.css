@@ -3,7 +3,8 @@ html {
   margin: auto;
   width: 70%;
   color: #444;
-  font: "Open Sans", "Helvetica Neue", Ubuntu, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Ubuntu, Arial, sans-serif;
+  font-size: 1em;
   margin-top: 80px;
 }
 
@@ -93,7 +94,7 @@ ul li {
 }
 
 ul li::before {
-  color: #788699;
+  color: #83a121;
   content: "\25AA";
   font-size: 1em;
   line-height: 125%;
