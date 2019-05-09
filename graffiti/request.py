@@ -166,7 +166,7 @@ class Request(object):
     def before_request(self, log):
         pass
 
-    def after_request(self, log):
+    def after_request(self, log, host):
         pass
 
     def save(self, path):
