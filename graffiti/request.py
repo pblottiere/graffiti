@@ -4,6 +4,7 @@ import csv
 import shutil
 import os
 import requests
+from collections import OrderedDict
 from tqdm import trange
 
 
@@ -40,7 +41,7 @@ class Request(object):
 
     def __init__(self, name, type, hosts, iterations=50, desc='',
                  logdir=None, title='', precision=2):
-        self.durations = {}
+        self.durations = OrderedDict()
         self.type = type
         self.hosts = hosts
         self.iterations = iterations
