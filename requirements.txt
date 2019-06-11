@@ -3,3 +3,4 @@ pyaml
 pygal
 requests
 tqdm
+psycopg2
