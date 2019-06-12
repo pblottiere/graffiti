@@ -1,0 +1,16 @@
+HOSTS:
+    - NAME: "Master"
+      COLOR: "#505160"
+      SHOW_DOTS: FALSE
+    - NAME: "Master 0"
+      COLOR: "#68829E"
+      STROKE: FALSE
+      SHOW_DOTS: TRUE
+      DOTS_SIZE: 2
+      DASHARRAY: "6, 2"
+    - NAME: "Master 1"
+      COLOR: "#AEBD38"
+      WIDTH: 4
+      SHOW_DOTS: TRUE
+      DOTS_SIZE: 10
+      DASHARRAY: "3, 6"
