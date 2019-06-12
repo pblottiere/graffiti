@@ -6,6 +6,17 @@ import datetime
 from.request import Type
 
 
+class ConfigStyle(object):
+
+    def __init__(self, cfg):
+        self.host = cfg['NAME']
+        self.color = cfg.get('COLOR', '#000000')
+        self.width = cfg.get('WIDTH', 1)
+        self.show_dots = cfg.get('SHOW_DOTS', True)
+        self.dots_size = cfg.get('DOTS_SIZE', 2)
+        self.dasharray = cfg.get('DASHARRAY', '')
+
+
 class ConfigHost(object):
 
     def __init__(self, cfg):
@@ -56,10 +67,14 @@ class ConfigRequest(object):
 
 class Config(object):
 
-    def __init__(self, yml, new=True):
+    def __init__(self, yml, yml_style, new=True):
         self.html = None
         self.requests = []
         self.read(yml)
+
+        self.styles = {}
+        if yml_style and os.path.isfile(yml_style):
+            self.read_style(yml_style)
 
         datefile = os.path.join(self.outdir, 'date')
         format = '%Y-%m-%d %H:%M:%S'
@@ -109,3 +124,12 @@ class Config(object):
             self.database = None
             if 'DATABASE' in cfg and cfg['DATABASE']:
                 self.database = cfg['DATABASE']
+
+    def read_style(self, yml):
+
+        with open(yml, 'r') as stream:
+            cfg = yaml.load(stream, Loader=yaml.FullLoader)
+
+            for host in cfg['HOSTS']:
+                style = ConfigStyle(host)
+                self.styles[style.host] = style

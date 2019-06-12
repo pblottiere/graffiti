@@ -1,12 +1,12 @@
 import pygal
 import os
 
-STYLE = pygal.style.DefaultStyle
-
 
 class Graph(object):
 
-    def __init__(self, req, svg=True):
+    def __init__(self, req, style, svg=True):
+        self.style = style
+
         self.req = req
         self.imgs = []
         self.svg = svg
@@ -23,7 +23,7 @@ class Graph(object):
             graph_x_title = x_title
 
         box = pygal.Box(x_title=graph_x_title, y_title='Response time in sec',
-                        style=STYLE, truncate_legend=-1)
+                        style=self.style.style(ds.keys()), truncate_legend=-1)
         box.title = '{}'.format(self.req.type.name)
 
         for name in self.req.durations.keys():
@@ -49,8 +49,10 @@ class Graph(object):
         if x_title:
             graph_x_title = x_title
 
-        line = pygal.Line(x_title=graph_x_title, y_title='Response time in sec',
-                          style=STYLE, x_label_rotation=x_label_rotation,
+        line = pygal.Line(x_title=graph_x_title,
+                          y_title='Response time in sec',
+                          style=self.style.style(ds.keys()),
+                          x_label_rotation=x_label_rotation,
                           truncate_legend=-1)
         line.title = '{}'.format(self.req.type.name)
 
@@ -58,7 +60,10 @@ class Graph(object):
             line.x_labels = x_labels
 
         for name in ds.keys():
-            line.add(name, ds[name])
+            line.add(name, ds[name],
+                     stroke_style=self.style.stroke(name),
+                     show_dots=self.style.show_dots(name),
+                     dots_size=self.style.dots_size(name))
 
         img = os.path.join(imdir, '{}_temporal'.format(self.req.name))
 

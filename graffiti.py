@@ -10,7 +10,8 @@ from graffiti import (Config,
                       Request,
                       Graph,
                       Database,
-                      Report)
+                      Report,
+                      Style)
 
 SPLASH = (''
           '                      _____  _____.__  __  .__\n'
@@ -24,16 +25,17 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Graffiti')
     parser.add_argument('-c', '--cfg', type=str, help='YAML configuration file')
-    parser.add_argument('-s', '--sqlite', action='store_true', help='Open the database')
+    parser.add_argument('-d', '--db', action='store_true', help='Open the database')
+    parser.add_argument('-s', '--style', type=str, help='YAML Style file')
     args = parser.parse_args()
 
     if not args.cfg:
         parser.print_help()
     elif (os.path.isfile(args.cfg)):
-        cfg = Config(args.cfg)
+        cfg = Config(args.cfg, args.style)
 
         # subcommands
-        if args.sqlite:
+        if args.db:
             if not cfg.database:
                 sys.stdout.write('Cannot open the database!\n')
                 sys.exit(1)
@@ -44,6 +46,7 @@ if __name__ == "__main__":
         sys.stdout.write(SPLASH)
         report = Report(cfg.title, cfg.date, cfg.logo)
         database = Database(cfg.database)
+        style = Style(cfg.styles)
 
         errors = []
         start = time.time()
@@ -55,7 +58,7 @@ if __name__ == "__main__":
             if req.errors:
                 errors += req.errors
 
-            graph = Graph(req)
+            graph = Graph(req, style)
             graph.draw(cfg.imdir)
 
             report.add(graph)
