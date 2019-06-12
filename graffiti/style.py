@@ -40,7 +40,7 @@ class Style(object):
 
     def dots_size(self, name):
 
-        dots_size = None
+        dots_size = 3
 
         if name in self.styles.keys():
             dots_size = self.styles[name].dots_size
