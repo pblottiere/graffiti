@@ -1,6 +1,0 @@
-Master
-    - HOST: http://37.187.164.233:8080/nightly_master_qgisserver
-    - SERVICE: WMS
-    - REQUEST: GetCapabilities
-    - MAP: /tmp/qgisserver/qgis-server-tutorial-data/world.qgs
-    - VERSION: 1.3.0
