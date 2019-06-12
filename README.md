@@ -122,6 +122,97 @@ HTML report, SVG graphs and logs are generated in the output directory
 graph  log  report.html  style.css
 ```
 
+#### Style
+
+Each series may be independently customised thanks to a dedicated YAML style
+file. For example, you can update the color for a specific host or configure
+the stroke style:
+
+```
+HOSTS:
+    - NAME: "QGIS Server 2.18"  # As specified in the main configuration file
+      COLOR: "#AEBD38"
+      WIDTH: 4
+      SHOW_DOTS: TRUE
+      DOTS_SIZE: 10
+      DASHARRAY: "3, 6"
+```  
+
+Then you can use the `--style` option:
+
+```
+(venv)$ ./graffiti.py --cfg conf/graffiti.sample.yml --style conf/style.yml
+```
+
+#### Database
+
+Numeric results are stored in a SQLite database as soon as the `DATABASE` entry
+is added to the main configuration file. For exemple in
+`conf/graffiti.sample.yml`:
+
+```
+DATABASE: graffiti.db
+```
+
+In this case, the SQLite database `graffiti.db` is available in
+`~/.local/share/graffiti/`. Note that you can use the `--db` action to
+automatically open the SQLite prompt and explore statistics thanks to SQL
+requests:
+
+```
+(venv)$ ./graffiti.py --cfg conf/graffiti.sample.yml --db
+SQLite version 3.27.2 2019-02-25 16:06:06
+Enter ".help" for usage hints.
+sqlite> .tables
+durations
+sqlite> .schema durations
+CREATE TABLE durations (request text, host text, date text, min real, mean real, max real);
+sqlite> SELECT AVG(mean) FROM durations WHERE host="Master 0" LIMIT 50;
+4.31962790697674
+```
+
+#### Data provider monitoring
+
+If your map server is serving some data coming from a database provider, you
+may monitor the underlying time spent outside of QGIS Server itself and add
+this time on graphs. Considering that graffiti has to run specific requests
+directly in the database to collect statistics, database access details have to
+be indicated in the main configuration file:
+
+```
+DB_HOST: localhost
+DB_PORT: 55432
+DB_NAME: data
+DB_USER: root
+DB_PASSWORD: root
+```
+
+Then, you have to add the provider type for each host you want to monitor:
+
+```
+    PROVIDER: POSTGRES
+```
+
+Not that for now, it's only implemented for PostgreSQL.
+
+#### Help
+
+Quick reminder:
+
+```
+(venv)$ ./graffiti.py --help
+usage: graffiti.py [-h] [-c CFG] [-d] [-s STYLE]
+
+Graffiti
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CFG, --cfg CFG     YAML configuration file
+  -d, --db              Open the database
+  -s STYLE, --style STYLE
+                        YAML Style file
+```
+
 ## API
 
 Instead of using the `graffiti.py` Python script, you can use the graffiti API
