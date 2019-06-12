@@ -1,0 +1,22 @@
+Master 0
+    - HOST: http://qgis4.qgis.org:8081/qgisserver_demo/
+    - WIDTH: 400
+    - HEIGHT: 400
+    - CRS: EPSG:4326
+    - LAYERS: parcelles
+    - VERSION: 1.3.0
+    - FORMAT: png
+    - BBOX: 43.27,3.77,44.70,8.29
+    - REQUEST: GetMap
+    - SERVICE: WMS
+Master 1
+    - HOST: http://qgis4.qgis.org:8081/qgisserver_demo/
+    - WIDTH: 400
+    - HEIGHT: 400
+    - CRS: EPSG:4326
+    - LAYERS: parcelles
+    - VERSION: 1.3.0
+    - FORMAT: png
+    - BBOX: 43.27,3.77,44.70,8.29
+    - REQUEST: GetMap
+    - SERVICE: WMS

@@ -1,0 +1,5 @@
+Master
+    - HOST: http://qgis4.qgis.org:8081/qgisserver_demo/
+    - VERSION: 1.3.0
+    - REQUEST: GetCapabilities
+    - SERVICE: WMS
