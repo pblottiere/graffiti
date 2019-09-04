@@ -3,4 +3,4 @@ pyaml
 pygal
 requests
 tqdm
-psycopg2
+psycopg2-binary
