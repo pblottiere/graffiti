@@ -212,7 +212,7 @@ optional arguments:
   -c CFG, --cfg CFG     YAML configuration file
   -d, --db              Open the database
   -s STYLE, --style STYLE
-                        YAML Style file
+                        YAML Style file for histograms
 ```
 
 ## API
