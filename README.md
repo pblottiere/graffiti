@@ -1,3 +1,5 @@
+<img align="left" width="80" height="80" src="https://github.com/pblottiere/graffiti/tree/master/graffiti/themes/default/graffiti.png">
+
 # Graffiti
 
 Graffiti is a simple tool allowing to:
@@ -136,7 +138,7 @@ HOSTS:
       SHOW_DOTS: TRUE
       DOTS_SIZE: 10
       DASHARRAY: "3, 6"
-```  
+```
 
 Then you can use the `--style` option:
 
