@@ -1,4 +1,4 @@
-<img align="left" width="80" height="80" src="https://github.com/pblottiere/graffiti/tree/master/graffiti/themes/default/graffiti.png">
+<img align="left" width="80" height="80" src="https://raw.githubusercontent.com/pblottiere/graffiti/master/graffiti/themes/default/graffiti.png">
 
 # Graffiti
 
