@@ -8,7 +8,7 @@ Graffiti is a simple tool allowing to:
 - generate a HTML report with interactive SVG graphs (response time and
   statistics) as well as resulting images
 
-A report example is available [here](https://rawgit.com/pblottiere/graffiti/master/examples/html/report.html).
+A report example with the QGIS theme is available [here](https://rawgit.com/pblottiere/graffiti/master/examples/html/report.html).
 
 For now, only `GetCapabilities` and `GetMap` requests for WMS services are
 supported.
