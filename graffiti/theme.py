@@ -22,9 +22,18 @@ __date__ = "2019/06/10"
 __email__ = "blottiere.paul@gmail.com"
 __license__ = "GPLv3"
 
-from .config import Config
-from .request import Request
-from .graph import Graph
-from .report import Report
-from .database import Database
-from .style import Style
+import os
+
+
+class Theme(object):
+
+    def __init__(self, name):
+        dirname = os.path.dirname(os.path.abspath(__file__))
+        themesdir = os.path.join(dirname, "themes")
+
+        self.logo = os.path.join(themesdir, "default", "graffiti.png")
+        self.css = os.path.join(themesdir, "default", "style.css")
+
+        if name.lower() == "qgis":
+            self.logo = os.path.join(themesdir, "qgis", "qgis.png")
+            self.css = os.path.join(themesdir, "qgis", "style.css")

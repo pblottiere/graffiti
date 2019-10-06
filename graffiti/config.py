@@ -1,9 +1,34 @@
+# coding: utf8
+
+"""
+Graffiti, a map server performance reporter.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+"""
+
+__author__ = "Paul Blottiere"
+__contact__ = "blottiere.paul@gmail.com"
+__copyright__ = "Copyright 2019, Paul Blottiere"
+__date__ = "2019/06/10"
+__email__ = "blottiere.paul@gmail.com"
+__license__ = "GPLv3"
+
+import os
 import yaml
 import shutil
-import os
 import datetime
 
-from.request import Type
+from .theme import Theme
+from .request import Type
 
 
 class ConfigStyle(object):
@@ -102,7 +127,19 @@ class Config(object):
             self.title = cfg['TITLE']
             self.precision = cfg['PRECISION']
             self.basedir = os.path.dirname(os.path.abspath(yml))
-            self.logo = os.path.join(self.basedir, cfg['LOGO'])
+
+            if 'LOGO' in cfg:
+                self.logo = os.path.join(self.basedir, cfg['LOGO'])
+
+            if 'CSS' in cfg:
+                self.css = os.path.join(self.basedir, cfg['CSS'])
+
+            # theme priority over logo/style
+            if 'THEME' in cfg:
+                theme = Theme(cfg['THEME'])
+                self.logo = theme.logo
+                self.css = theme.css
+
             self.db_config = ConfigDatabase(cfg)
 
             self.outdir = cfg['OUTDIR']

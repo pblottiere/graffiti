@@ -1,3 +1,27 @@
+# coding: utf8
+
+"""
+Graffiti, a map server performance reporter.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+"""
+
+__author__ = "Paul Blottiere"
+__contact__ = "blottiere.paul@gmail.com"
+__copyright__ = "Copyright 2019, Paul Blottiere"
+__date__ = "2019/06/10"
+__email__ = "blottiere.paul@gmail.com"
+__license__ = "GPLv3"
+
 import fileinput
 import shutil
 import os
@@ -56,10 +80,11 @@ class ReportTOC(object):
 
 class Report(object):
 
-    def __init__(self, title, date, logo):
+    def __init__(self, title, date, logo, css):
         self.date = date
         self.title = title
         self.logo = logo
+        self.css = css
         self.charts = ''
         self.toc = ReportTOC()
 
@@ -73,8 +98,7 @@ class Report(object):
 
         shutil.copyfile(self.logo, os.path.join(os.path.dirname(html), 'logo.png'))
 
-        src = os.path.join(dirname, 'style.css')
-        shutil.copyfile(src, os.path.join(os.path.dirname(html), 'style.css'))
+        shutil.copyfile(self.css, os.path.join(os.path.dirname(html), 'style.css'))
 
         with fileinput.FileInput(html, inplace=True) as file:
             for line in file:
