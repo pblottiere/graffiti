@@ -22,15 +22,16 @@ __date__ = "2019/06/10"
 __email__ = "blottiere.paul@gmail.com"
 __license__ = "GPLv3"
 
-import time
-from enum import Enum
-import csv
-import shutil
 import os
+import csv
+import time
+import shutil
 import requests
-from collections import OrderedDict
 import psycopg2
+from enum import Enum
 from tqdm import trange
+from collections import OrderedDict
+from multiprocessing import Process, Value, Pool
 
 
 class Error(object):
@@ -65,7 +66,7 @@ class Host(object):
 class Request(object):
 
     def __init__(self, name, type, hosts, iterations=50, desc='',
-                 logdir=None, title='', precision=2):
+                 logdir=None, title='', precision=2, jobs=1):
         self.durations = OrderedDict()
         self.type = type
         self.hosts = hosts
@@ -75,6 +76,7 @@ class Request(object):
         self.logdir = logdir
         self.title = title
         self.precision = precision
+        self.jobs = jobs
         self.errors = []
 
     @property
@@ -101,6 +103,7 @@ class Request(object):
         type = cfg.type
         logdir = cfg.logdir
         precision = cfg.precision
+        jobs = cfg.jobs
 
         hosts = []
         for hostCfg in cfg.hosts:
@@ -112,7 +115,7 @@ class Request(object):
                              title, precision, cfg.db_config)
         else:
             return Request(name, type, hosts, iterations, desc, logdir,
-                           title, precision)
+                           title, precision, jobs)
 
     def run(self):
         log = None
@@ -120,9 +123,13 @@ class Request(object):
             logfile = os.path.join(self.logdir, '{}.log'.format(self.name))
             log = open(logfile, 'w')
 
+        # in case of multi-client scenario, a mean on each iteration
+        # kept.
+        def mean(a):
+            return sum(a) / len(a)
+
         for i in trange(len(self.hosts), leave=False, desc='Hosts'):
             host = self.hosts[i]
-            dur = []
 
             if log:
                 log.write(host.name)
@@ -131,45 +138,18 @@ class Request(object):
                 for key in host.payload.keys():
                     log.write('    - {}: {}\n'.format(key, host.payload[key]))
 
-            for j in trange(self.iterations, leave=False, desc='Iterations'):
+            params = []
+            for i in range(0, self.jobs):
+                params.append((self, host, i))
 
-                self.before_request(log)
+            if self.jobs > 1:
+                p = Pool(self.jobs)
+                res = p.map(Request._run, params)
+                res = list(map(mean, zip(*res)))
+            else:
+                res = self._run(params[0])
 
-                start = time.time()
-
-                try:
-                    r = requests.get(host.host, params=host.payload,
-                                     stream=True)
-                except requests.exceptions.RequestException as e:
-                    err = Error(self.name, host.name, 'Exception', e)
-                    self.errors.append(err)
-                    dur.append(0)
-                    continue
-
-                if r.status_code != 200:
-                    e = Error(self.name, host.name, r.status_code, r.text)
-                    self.errors.append(e)
-                    dur.append(0)
-                    continue
-
-                # log 1st iteration when it's an image (to be able to include
-                # the figure in the long description)
-                if self.logdir and j == 0 and 'FORMAT' in host.payload \
-                        and 'png' in host.payload['FORMAT']:
-                    hn = host.name
-                    hn = ''.join(c for c in hn if c not in '(){}<>')
-                    hn = hn.replace(' ', '_')
-                    imname = '{}_{}.png'.format(self.name, hn.lower())
-                    logres = os.path.join(self.logdir, imname)
-                    with open(logres, 'wb') as f:
-                        r.raw.decode_content = True
-                        shutil.copyfileobj(r.raw, f)
-
-                dur.append(round(time.time() - start, self.precision))
-
-                self.after_request(log, host)
-
-            self.durations[host.name] = dur
+            self.durations[host.name] = res
 
         if log:
             log.close()
@@ -187,10 +167,10 @@ class Request(object):
                         row.append(self.durations[key][i])
                     writer.writerow(row)
 
-    def before_request(self, log):
+    def before_request(self):
         pass
 
-    def after_request(self, log, host):
+    def after_request(self, host):
         pass
 
     def save(self, path):
@@ -200,6 +180,53 @@ class Request(object):
                 f.write(' ')
                 f.write(' '.join(map(str, self.durations[host.name])))
                 f.write('\n')
+
+    @staticmethod
+    def _run(params):
+        request = params[0]
+        host = params[1]
+        n = params[2]
+
+        dur = []
+
+        for j in trange(request.iterations, leave=False, desc='Iterations'):
+            request.before_request()
+
+            start = time.time()
+
+            try:
+                r = requests.get(host.host, params=host.payload,
+                                 stream=True)
+            except requests.exceptions.RequestException as e:
+                err = Error(request.name, host.name, 'Exception', e)
+                request.errors.append(err)
+                dur.append(0)
+                continue
+
+            if r.status_code != 200:
+                e = Error(request.name, host.name, r.status_code, r.text)
+                request.errors.append(e)
+                dur.append(0)
+                continue
+
+            # log 1st iteration when it's an image (to be able to include
+            # the figure in the long description)
+            if request.logdir and n == 0 and j == 0 and 'FORMAT' in host.payload \
+                    and 'png' in host.payload['FORMAT']:
+                hn = host.name
+                hn = ''.join(c for c in hn if c not in '(){}<>')
+                hn = hn.replace(' ', '_')
+                imname = '{}_{}.png'.format(request.name, hn.lower())
+                logres = os.path.join(request.logdir, imname)
+                with open(logres, 'wb') as f:
+                    r.raw.decode_content = True
+                    shutil.copyfileobj(r.raw, f)
+
+            dur.append(round(time.time() - start, request.precision))
+
+            request.after_request(host)
+
+        return dur
 
 
 class DBRequest(Request):
@@ -217,12 +244,12 @@ class DBRequest(Request):
 
         self.pcur = self.pcon.cursor()
 
-    def before_request(self, log):
+    def before_request(self):
         # reinit db statistics
         self.pcur.execute("select pg_stat_statements_reset()")
         self.pcon.commit()
 
-    def after_request(self, log, host):
+    def after_request(self, host):
         self.pcur.execute("""
         SELECT sum(total_time), string_agg(query, ',')
         FROM pg_stat_statements

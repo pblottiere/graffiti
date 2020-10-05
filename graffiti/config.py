@@ -78,6 +78,11 @@ class ConfigRequest(object):
         self.description = None
         if cfg['DESCRIPTION']:
             self.description = os.path.join(basedir, cfg['DESCRIPTION'])
+
+        self.jobs = 1
+        if 'JOBS' in cfg:
+            self.jobs = cfg['JOBS']
+
         self.iterations = cfg['ITERATIONS']
         self.name = cfg['NAME']
         self.logdir = logdir
