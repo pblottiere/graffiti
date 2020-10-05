@@ -23,6 +23,7 @@ REQUESTS:
       DESCRIPTION: getmap.html
       LOG: True
       ITERATIONS: 5
+      JOBS: 4
       HOSTS:
           - NAME: "Master 0"
             HOST: http://qgis4.qgis.org:8081/qgisserver_demo/
