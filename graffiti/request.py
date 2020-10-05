@@ -142,9 +142,13 @@ class Request(object):
             for i in range(0, self.jobs):
                 params.append((self, host, i))
 
-            p = Pool(self.jobs)
-            res = p.map(Request._run, params)
-            res = list(map(mean, zip(*res)))
+            if self.jobs > 1:
+                p = Pool(self.jobs)
+                res = p.map(Request._run, params)
+                res = list(map(mean, zip(*res)))
+            else:
+                res = self._run(params[0])
+
             self.durations[host.name] = res
 
         if log:
