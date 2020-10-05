@@ -186,7 +186,7 @@ class Request(object):
         dur = []
 
         for j in trange(request.iterations, leave=False, desc='Iterations'):
-            param.before_request(log)
+            request.before_request(log)
 
             start = time.time()
 
@@ -220,7 +220,7 @@ class Request(object):
 
             dur.append(round(time.time() - start, request.precision))
 
-            self.after_request(log, host)
+            request.after_request(log, host)
 
         return dur
 
