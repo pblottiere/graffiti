@@ -163,10 +163,10 @@ class Request(object):
                         row.append(self.durations[key][i])
                     writer.writerow(row)
 
-    def before_request(self, log):
+    def before_request(self):
         pass
 
-    def after_request(self, log, host):
+    def after_request(self, host):
         pass
 
     def save(self, path):
@@ -186,7 +186,7 @@ class Request(object):
         dur = []
 
         for j in trange(request.iterations, leave=False, desc='Iterations'):
-            request.before_request(log)
+            request.before_request()
 
             start = time.time()
 
@@ -220,7 +220,7 @@ class Request(object):
 
             dur.append(round(time.time() - start, request.precision))
 
-            request.after_request(log, host)
+            request.after_request(host)
 
         return dur
 
@@ -240,12 +240,12 @@ class DBRequest(Request):
 
         self.pcur = self.pcon.cursor()
 
-    def before_request(self, log):
+    def before_request(self):
         # reinit db statistics
         self.pcur.execute("select pg_stat_statements_reset()")
         self.pcon.commit()
 
-    def after_request(self, log, host):
+    def after_request(self, host):
         self.pcur.execute("""
         SELECT sum(total_time), string_agg(query, ',')
         FROM pg_stat_statements
