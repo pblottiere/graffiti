@@ -70,7 +70,7 @@ class Database(object):
         for host in request.hosts:
             sql = ('SELECT date,round(mean, 2) FROM durations WHERE '
                    'request=\'{request}\' AND host=\'{host}\' '
-                   'AND mean >= {min} LIMIT {limit}'
+                   'AND mean >= {min} ORDER BY date DESC LIMIT {limit}'
                    .format(request=name, host=host.name, min=min, limit=limit))
 
             cur = self.con.cursor()
